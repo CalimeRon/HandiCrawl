@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="100mm"
+   height="100mm"
+   viewBox="0 0 100 100"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="warning.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.0998546"
+     inkscape:cx="-95.467164"
+     inkscape:cy="45.91516"
+     inkscape:window-width="1947"
+     inkscape:window-height="1107"
+     inkscape:window-x="727"
+     inkscape:window-y="138"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <defs
+     id="defs2">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath135">
+      <rect
+         style="fill:#ffffff;stroke-width:0.264583"
+         id="rect137"
+         width="139.69073"
+         height="108.81783"
+         x="201.40207"
+         y="59.536083" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath333">
+      <rect
+         style="fill:#55ff99;stroke-width:0.513847"
+         id="rect335"
+         width="111.68427"
+         height="107.81107"
+         x="229.40857"
+         y="60.542839" />
+    </clipPath>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-52.219872,-96.347015)">
+    <circle
+       style="fill:#ffde07;fill-opacity:1;fill-rule:evenodd;stroke-width:0.264583"
+       id="path50"
+       cx="102.21987"
+       cy="146.34702"
+       r="50" />
+    <circle
+       style="fill:#ffffff;fill-rule:evenodd;stroke-width:0.28619"
+       id="path52"
+       cx="-79.778343"
+       cy="85.070396"
+       r="35" />
+    <ellipse
+       style="fill:#333333;fill-opacity:1;stroke-width:0.296437"
+       id="path2926"
+       cx="101.83582"
+       cy="134.59641"
+       rx="9.9231863"
+       ry="32.475883" />
+    <ellipse
+       style="fill:#333333;fill-opacity:1;stroke-width:0.264583"
+       id="path3054"
+       cx="102.13651"
+       cy="178.91995"
+       rx="9.3819218"
+       ry="9.4420624" />
+    <rect
+       style="fill:#333333;fill-opacity:1;stroke-width:0.272276"
+       id="rect3165"
+       width="19.616137"
+       height="38.008812"
+       x="92.022575"
+       y="101.15826" />
+  </g>
+</svg>

@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import MapComponent from '../components/MapComponent';
 import AppLoading from 'expo-app-loading';
@@ -9,11 +9,21 @@ import { getCoords } from '../services/apiServices';
 
 export default function App () {
   const [locationLoaded, setLocationLoaded] = useState(false);
-  const [location, setLocation] = useState(null);
+  const [region, setRegion] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [coords, setCoords] = useState([]);
+  const [currentRegion, setCurrentRegion] = useState({});
 
   let success = false;
+
+  useEffect(() => {
+    getNewIcons(region);
+  }, [region])
+
+  const getNewIcons = async (region) => {
+    const newCoords = await getCoords(region);
+    setCoords(newCoords);
+  }
 
   const firstLoad = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -32,12 +42,10 @@ export default function App () {
         console.log("retrying...", u_u);
       }
     }
-    setLocation({
+    await setRegion({
       ...loc.coords,
       icon: 'current'
     });
-    
-    setCoords(getCoords());
   }
   
 
@@ -52,7 +60,7 @@ export default function App () {
   }
   return (
     <View style={styles.container}>
-      <MapComponent location={location} coords={coords}  />
+      <MapComponent region={region} coords={coords} setRegion={setRegion} />
       <StatusBar style="auto" />
       <Text>Hello</Text>
     </View>

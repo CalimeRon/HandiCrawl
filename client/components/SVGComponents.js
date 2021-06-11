@@ -5,7 +5,7 @@ let width = "50"
 
 export function StairsSvg () {
   const svgMarkup = `
-  <svg width="100mm" height="100mm" version="1.1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <svg width="100" height="100" version="1.1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
    <defs>
     <clipPath id="clipPath333">
      <rect x="229.41" y="60.543" width="111.68" height="107.81" fill="#5f9" stroke-width=".51385"/>
@@ -32,8 +32,8 @@ export function StairsSvg () {
 export function WarningSvg () {
   const svgMarkup = `
   <svg
-  width="100mm"
-  height="100mm"
+  width="100"
+  height="100"
   viewBox="0 0 100 100"
   version="1.1"
   id="svg5"
