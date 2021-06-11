@@ -6,7 +6,7 @@ const maxZoom = 0.022;
 
 
 export async function getCoords (region) {
-  console.log("region in service", region)
+  // console.log("region in service", region)
   // const calculateDistance;
   // console.log(db);
   // const debe = db.filter(item => )
@@ -16,7 +16,7 @@ export async function getCoords (region) {
       { latitude: item.latitude, longitude: item.longitude },
       { latitude: region.latitude, longitude: region.longitude }
     );
-    console.log("dis", dis);
+    // console.log("dis", dis);
     return dis <= regionToLoad;
   })
 }

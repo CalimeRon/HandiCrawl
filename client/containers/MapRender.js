@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from "react";
 import MapView from "react-native-maps";
-import { StyleSheet, Text, View, Dimensions, Image, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Image,
+  Pressable,
+  Alert,
+  Modal,
+  TouchableHighlight,
+} from "react-native";
+import { AddIconModal } from "../components/Modals";
 
 // import current from '../assets/Hawkings.png'
 import {
@@ -12,45 +23,44 @@ import {
 // import { WarningSvg } from "./SVGCompTest";
 // import Svg, { Circle, Rect, SvgUri } from "react-native-svg";
 
-export default function MapRender({
-  region,
-  setRegion,
-  coords,
-}) {
+export default function MapRender({ region, setRegion, coords }) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [IconEvent, setIconEvent] = useState({})
 
   const setDimension = (region) => {
     if (region.latitudeDelta > 0.005) return 30;
     else return 50;
-}
+  };
 
   let dimension = setDimension(region);
+
   const iconToRender = (iconId) => {
-    console.log("in icon render");
+    // console.log("in icon render");
     switch (iconId) {
       case "warning":
-        console.log("in warning");
+        // console.log("in warning");
         // console.log(WarningSvg())
         return require("../assets/warning.png");
       case "easyAccess":
-        console.log("in easy access");
+        // console.log("in easy access");
         return require("../assets/easyAccess.png");
       case "elevator":
-        console.log("in elevator");
+        // console.log("in elevator");
         return require("../assets/elevator.png");
       case "ramp":
-        console.log("in ramp");
+        // console.log("in ramp");
         return require("../assets/ramp.png");
       case "stairs":
-        console.log("in stairs");
+        // console.log("in stairs");
         return require("../assets/stairs.png");
       default:
-        console.log("in default");
+        // console.log("in default");
         return require("../assets/smilou.png");
     }
   };
 
   const populateRegion = coords.map((coordItem) => {
-    console.log("placeName", coordItem.placeName);
+    // console.log("placeName", coordItem.placeName);
     return (
       <MapView.Marker
         key={coordItem._id}
@@ -64,11 +74,7 @@ export default function MapRender({
         }
         description={coordItem.description}
         anchor={{ x: 0.5, y: 0.5 }}
-        // icon={{
-        //   url: require("../assets/warning.svg"),
-        // }}
       >
-        {/* {iconToRender(coordItem.icon)} */}
         <Image
           style={{ resizeMode: "stretch", width: dimension, height: dimension }}
           source={iconToRender(coordItem.icon)}
@@ -76,6 +82,13 @@ export default function MapRender({
       </MapView.Marker>
     );
   });
+
+  let addIconModal;
+  // if (modalVisible) {
+  //   addIconModal = (
+      
+  //   );
+  // }
 
   // console.log(location);
   return (
@@ -95,11 +108,32 @@ export default function MapRender({
         showsUserLocation={true}
         showsMyLocationButton={true}
         rotateEnabled={false}
-        onLongPress={(e) => console.log("pressed!")}
+        onLongPress={(e) => {
+          setIconEvent(e.nativeEvent);
+          setModalVisible(true);
+        }}
       >
         {populateRegion}
-
+        
       </MapView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+        }}
+      >
+        <View style={{backgroundColor: "#bde0ac"}}>
+          <TouchableHighlight
+            onPress={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <Text>Hide Modal</Text>
+          </TouchableHighlight>
+        </View>
+      </Modal>
     </View>
   );
 }
