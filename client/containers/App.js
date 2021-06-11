@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import MapComponent from '../components/MapComponent';
+import MapRender from './MapRender';
 import AppLoading from 'expo-app-loading';
 import * as Location from 'expo-location';
 import * as Network from 'expo-network';
@@ -60,7 +60,7 @@ export default function App () {
   }
   return (
     <View style={styles.container}>
-      <MapComponent region={region} coords={coords} setRegion={setRegion} />
+      <MapRender region={region} coords={coords} setRegion={setRegion} />
       <StatusBar style="auto" />
       <Text>Hello</Text>
     </View>

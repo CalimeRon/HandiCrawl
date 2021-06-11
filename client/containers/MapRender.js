@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MapView from "react-native-maps";
-import { StyleSheet, Text, View, Dimensions, Image } from "react-native";
+import { StyleSheet, Text, View, Dimensions, Image, Pressable } from "react-native";
 
 // import current from '../assets/Hawkings.png'
 import {
@@ -8,11 +8,11 @@ import {
   EasyAccessSvg,
   ElevatorSvg,
   RampSvg,
-} from "./SVGComponents";
+} from "../components/SVGComponents";
 // import { WarningSvg } from "./SVGCompTest";
 // import Svg, { Circle, Rect, SvgUri } from "react-native-svg";
 
-export default function MapComponent({
+export default function MapRender({
   region,
   setRegion,
   coords,
@@ -95,8 +95,10 @@ export default function MapComponent({
         showsUserLocation={true}
         showsMyLocationButton={true}
         rotateEnabled={false}
+        onLongPress={(e) => console.log("pressed!")}
       >
         {populateRegion}
+
       </MapView>
     </View>
   );
