@@ -1,20 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import MapView from 'react-native-maps';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Image } from 'react-native';
+// import current from '../assets/Hawkings.png'
+import {StairsSvg, WarningSvg, EasyAccessSvg, ElevatorSvg, RampSvg }from './SVGComponents'
+
+export default function MapComponent ({ location, coords }) {
 
 
-export default function MapComponent ({ location }) {
 
+  const iconToRender = (iconId) => {
+    console.log("in icon render")
+    switch (iconId) {
+      case 'current':
+        console.log('in current')
+        return <StairsSvg />;
+      case 'warning':
+        console.log('in warning')
+        return <WarningSvg />;
+      case 'easyAccess':
+        console.log('in easy access')
+        return <EasyAccessSvg />;
+      case 'elevator':
+        console.log('in elevator')
+        return <ElevatorSvg />;
+      case 'ramp':
+        console.log('in ramp');
+        return <RampSvg />;
+      case 'stairs':
+        console.log('in stairs');
+        return <StairsSvg />;
+      default:
+        console.log('in default')
+        return require('../assets/smilou.png');
+    }
+  }
+  
+  const markerItem = coords.map(coordItem => {
+    console.log("placeName", coordItem.placeName);
+    return (<MapView.Marker
+      key={coordItem._id}
+      coordinate={coordItem}
+      title={coordItem.placeName}
+      description={coordItem.description} >
+      {iconToRender(coordItem.icon)}
+    </MapView.Marker>);
+})
 
-  console.log(location);
+  // console.log(location);
   return (
     <View style={styles.container}>
       <MapView style={styles.map}
         region={location !== null ? {
           latitude: location.latitude,
           longitude: location.longitude,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01
         } : {
           latitude: 43.438232,
           longitude: 26.0933715,
@@ -26,9 +66,19 @@ export default function MapComponent ({ location }) {
       >
         <MapView.Marker
           coordinate={location}
-          title="My Marker"
-          description="Some description"
-        />
+          title="You are here"
+          description="let's Roll the chair" >
+          {iconToRender(location.icon)}
+          {/* <Image
+            source={iconToRender(location.icon)}
+            style={styles.mapMarker}
+            resizeMode='center'
+            resizeMethod='resize'
+          /> */}
+          {/* <Text style={styles.mapMarker}>🤣</Text> */}
+        </MapView.Marker>
+        {markerItem}
+
       </MapView>
 
     </View>
@@ -46,6 +96,10 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width - 10,
     height: Dimensions.get('window').height - 10,
   },
+  mapMarker: {
+    width: 40,
+    height: 40,
+  }
 });
 
 

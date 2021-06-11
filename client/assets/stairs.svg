@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg width="100mm" height="100mm" version="1.1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <clipPath id="clipPath333">
+   <rect x="229.41" y="60.543" width="111.68" height="107.81" fill="#5f9" stroke-width=".51385"/>
+  </clipPath>
+ </defs>
+ <g transform="translate(-52.22 -96.347)">
+  <circle cx="102.22" cy="146.35" r="50" fill="#800000" fill-rule="evenodd" stroke-width=".26458"/>
+  <circle cx="-79.778" cy="85.07" r="35" fill="#fff" fill-rule="evenodd" stroke-width=".28619"/>
+  <g transform="matrix(.67627 0 0 .54608 -94.408 81.532)" clip-path="url(#clipPath333)" fill="#fff">
+   <g transform="matrix(2.6528 0 0 2.4922 200.36 34.699)">
+    <polygon points="20.97 31.19 20.97 41.6 10.95 41.6 10.95 53.63 53.05 53.63 53.05 10.37 41.03 10.37 41.03 20.78 31 20.78 31 31.19" fill="#fff"/>
+    <text y="79" fill="#ffffff" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif" font-size="5px" font-weight="bold">Created by fix project</text>
+    <text y="84" fill="#ffffff" font-family="'Helvetica Neue', Helvetica, Arial-Unicode, Arial, Sans-serif" font-size="5px" font-weight="bold">from the Noun Project</text>
+   </g>
+  </g>
+ </g>
+</svg>
