@@ -17,7 +17,8 @@ export default function AddIconBottomSheet({
   setCoords,
   coords,
 }) {
-  console.log(iconEvent);
+  if (!visible) return <View></View>
+  console.log("icon event", iconEvent);
 
   return (
     <BottomSheet

@@ -13,6 +13,7 @@ export default function MapRender({ region, setRegion, coords, setCoords }) {
 
   //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
+    if (!region) return;
     if (region.latitudeDelta > 0.005) return 30;
     else return 50;
   };
