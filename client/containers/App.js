@@ -15,41 +15,60 @@ export default function App() {
   const [errorMsg, setErrorMsg] = useState(null);
   const [coords, setCoords] = useState([]);
   const [currentRegion, setCurrentRegion] = useState({});
-  const [storedBounds, setStoredBounds] = useState({})
-  const [needUpdateBonds, setNeedUpdateBonds] = useState(false);
+  const [storedBounds, setStoredBounds] = useState({});
+  const [stillInBounds, setStillInBounds] = useState(true);
   let success = false;
 
+  //function to get new icons from the API service
+  const getNewIcons = async (region, storedBounds) => {
+    const newCoords = await getCoords(region, storedBounds);
+    if (newCoords) {
+      setCoords(newCoords);
+      setStillInBounds(true)
+    }
+  };
 
-  //When the user changes region on the map, call the new icons to render on the map
-  useEffect(() => {
+  const updateMapElements = async () => {
     if (!region) return;
-    console.log(coords.length !== 0);
+    // console.log(coords.length !== 0);
     if (
       region.latitude > storedBounds.minLat &&
       region.latitude < storedBounds.maxLat &&
       region.longitude > storedBounds.minLong &&
-      region.longitude < storedBounds.maxLong
+      region.longitude < storedBounds.maxLong &&
+      locationLoaded === true
     ) {
       console.log("not sending request");
       return;
     }
-    getNewIcons(region);
     setStoredBounds(getBounds(region));
+    setStillInBounds(false)
+    await getNewIcons(region);
+    if (!locationLoaded) setLocationLoaded(true);
+  };
+
+  //When the user changes region on the map, call the new icons to render on the map
+  useEffect(() => {
+    updateMapElements();
   }, [region]);
+  
+  // const fuckyou = async () => {
+
+  // }
 
   useEffect(() => {
-    firstLoad().then((result) => {
-      setRegion(result.coords);
-      setLocationLoaded(true);
-      setStoredBounds(getBounds(region))
-    });
+    firstLoad()
+      .then((result) => {
+        console.log("first then", result);
+        const theCoords = getCoords(result.coords);
+        return { result: result, coords: theCoords };
+      })
+      .then(({ result, coords }) => {
+        console.log("in second theb", result, coords);
+        setCoords(coords);
+        setRegion(result.coords);
+      });
   }, []);
-
-  //function to get new icons from the API service
-  const getNewIcons = async (region) => {
-    const newCoords = await getCoords(region);
-    if (newCoords) setCoords(newCoords);
-  };
 
   //on first load, get authorization for location...
   const firstLoad = async () => {
@@ -64,10 +83,12 @@ export default function App() {
       try {
         loc = await Location.getCurrentPositionAsync();
         success = true;
+        setStoredBounds(getBounds(loc.coords));
       } catch (u_u) {
         console.log("retrying...", u_u);
       }
     }
+    // await getNewIcons(loc.coords, storedBounds);
     //... then load the icons for the region of the current user location
     return loc;
   };
@@ -94,6 +115,10 @@ export default function App() {
     );
   }
 
+  if (locationLoaded) {
+    console.log(region, coords)
+  }
+
   return (
     <View style={styles.container}>
       <MapRender
@@ -101,6 +126,7 @@ export default function App() {
         coords={coords}
         setRegion={setRegion}
         setCoords={setCoords}
+        stillInBounds={stillInBounds}
       />
       <StatusBar style="auto" />
       <Text>Hello</Text>

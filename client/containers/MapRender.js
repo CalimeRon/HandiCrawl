@@ -6,7 +6,7 @@ import AddIconBottomSheet from '../components/AddIconBottomSheetComponent';
 import renderIcon from '../services/iconRendering';
 
 
-export default function MapRender({ region, setRegion, coords, setCoords }) {
+export default function MapRender({ region, setRegion, coords, setCoords, stillInBounds }) {
   const [iconEvent, setIconEvent] = useState({});
   const [visible, setVisible] = useState(false);
 
@@ -19,30 +19,34 @@ export default function MapRender({ region, setRegion, coords, setCoords }) {
   };
 
   let dimension = setDimension(region);
-
+  let populateRegion;
+  if (coords.length !== 0) {
+    console.log('putain de coords', coords[0])
+    populateRegion = coords.map((coordItem) => {
+      return (
+        <MapView.Marker
+          key={coordItem.latitude + coordItem.longitude} //TODO: change that
+          coordinate={coordItem}
+          title={
+            coordItem.placeName +
+            " " +
+            coordItem.latitude +
+            " " +
+            coordItem.longitude
+          }
+          description={coordItem.description}
+          anchor={{ x: 0.5, y: 0.5 }}
+        >
+          <Image
+            style={{ resizeMode: "contain", width: dimension, height: dimension, flex: 1 }}
+            source={renderIcon(coordItem.icon)}
+          />
+        </MapView.Marker>
+      );
+    })
+  }
   //populate the map by looping through each icon coordinate to render and creating a Marker component for each
-  const populateRegion = coords.map((coordItem) => {
-    return (
-      <MapView.Marker
-        key={coordItem.latitude + coordItem.longitude} //TODO: change that
-        coordinate={coordItem}
-        title={
-          coordItem.placeName +
-          " " +
-          coordItem.latitude +
-          " " +
-          coordItem.longitude
-        }
-        description={coordItem.description}
-        anchor={{ x: 0.5, y: 0.5 }}
-      >
-        <Image
-          style={{ resizeMode: "contain", width: dimension, height: dimension, flex: 1 }}
-          source={renderIcon(coordItem.icon)}
-        />
-      </MapView.Marker>
-    );
-  });
+
   
   return (
     <View style={styles.container}>

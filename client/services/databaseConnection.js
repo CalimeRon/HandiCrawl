@@ -1,6 +1,5 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import admin from 'firebase-admin';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBwFk0rmjv0JHcUzWtXV_ZpnoYQDR7MVTU",
@@ -15,7 +14,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-const dbh = admin.firestore();
+const dbh = firebase.firestore();
 
 
 export default dbh;
