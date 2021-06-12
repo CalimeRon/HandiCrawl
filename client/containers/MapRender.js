@@ -11,22 +11,14 @@ import {
   Modal,
   TouchableHighlight,
 } from "react-native";
-import { AddIconModal } from "../components/Modals";
 
-// import current from '../assets/Hawkings.png'
-import {
-  StairsSvg,
-  EasyAccessSvg,
-  ElevatorSvg,
-  RampSvg,
-} from "../components/SVGComponents";
-// import { WarningSvg } from "./SVGCompTest";
-// import Svg, { Circle, Rect, SvgUri } from "react-native-svg";
+
 
 export default function MapRender({ region, setRegion, coords }) {
-  const [modalVisible, setModalVisible] = useState(false);
+  // const [modalVisible, setModalVisible] = useState(false); // testing Modal
   const [IconEvent, setIconEvent] = useState({})
 
+  //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
     if (region.latitudeDelta > 0.005) return 30;
     else return 50;
@@ -34,33 +26,26 @@ export default function MapRender({ region, setRegion, coords }) {
 
   let dimension = setDimension(region);
 
+  // Access the icon png depending on the iconId parameter inside the location object
   const iconToRender = (iconId) => {
-    // console.log("in icon render");
     switch (iconId) {
       case "warning":
-        // console.log("in warning");
-        // console.log(WarningSvg())
         return require("../assets/warning.png");
       case "easyAccess":
-        // console.log("in easy access");
         return require("../assets/easyAccess.png");
       case "elevator":
-        // console.log("in elevator");
         return require("../assets/elevator.png");
       case "ramp":
-        // console.log("in ramp");
         return require("../assets/ramp.png");
       case "stairs":
-        // console.log("in stairs");
         return require("../assets/stairs.png");
       default:
-        // console.log("in default");
         return require("../assets/smilou.png");
     }
   };
 
+  //populate the map by looping through each icon coordinate to render and creating a Marker component for each
   const populateRegion = coords.map((coordItem) => {
-    // console.log("placeName", coordItem.placeName);
     return (
       <MapView.Marker
         key={coordItem._id}
@@ -83,6 +68,7 @@ export default function MapRender({ region, setRegion, coords }) {
     );
   });
 
+  /* TESTING
   let addIconModal;
   // if (modalVisible) {
   //   addIconModal = (
@@ -91,10 +77,11 @@ export default function MapRender({ region, setRegion, coords }) {
   // }
 
   // console.log(location);
+  */
+  
   return (
     <View style={styles.container}>
       <MapView
-        // onMapReady={() => setRegion()  }
         onRegionChangeComplete={(region) => setRegion(region)}
         style={styles.map}
         initialRegion={{
@@ -114,7 +101,6 @@ export default function MapRender({ region, setRegion, coords }) {
         }}
       >
         {populateRegion}
-        
       </MapView>
       <Modal
         animationType="slide"
@@ -148,9 +134,10 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
   },
-  mapMarker: {},
 });
 
+
+//imported style for regular markers of the map 
 const customStyle = [
   {
     elementType: "geometry",
