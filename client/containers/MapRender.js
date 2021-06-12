@@ -11,12 +11,14 @@ import {
   Modal,
   TouchableHighlight,
 } from "react-native";
-
+import { BottomSheet } from 'react-native-btr';
+import AddIconBottomSheet from '../components/AddIconBottomSheetComponent'
 
 
 export default function MapRender({ region, setRegion, coords }) {
-  // const [modalVisible, setModalVisible] = useState(false); // testing Modal
-  const [IconEvent, setIconEvent] = useState({})
+  const [iconEvent, setIconEvent] = useState({});
+  const [visible, setVisible] = useState(false);
+
 
   //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
@@ -61,23 +63,12 @@ export default function MapRender({ region, setRegion, coords }) {
         anchor={{ x: 0.5, y: 0.5 }}
       >
         <Image
-          style={{ resizeMode: "stretch", width: dimension, height: dimension }}
+          style={{ resizeMode: "contain", width: dimension, height: dimension, flex: 1 }}
           source={iconToRender(coordItem.icon)}
         />
       </MapView.Marker>
     );
   });
-
-  /* TESTING
-  let addIconModal;
-  // if (modalVisible) {
-  //   addIconModal = (
-      
-  //   );
-  // }
-
-  // console.log(location);
-  */
   
   return (
     <View style={styles.container}>
@@ -96,33 +87,19 @@ export default function MapRender({ region, setRegion, coords }) {
         showsMyLocationButton={true}
         rotateEnabled={false}
         onLongPress={(e) => {
-          setIconEvent(e.nativeEvent);
-          setModalVisible(true);
+          setIconEvent(e.nativeEvent)
+          setVisible(true)
         }}
       >
         {populateRegion}
       </MapView>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-        }}
-      >
-        <View style={{backgroundColor: "#bde0ac"}}>
-          <TouchableHighlight
-            onPress={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <Text>Hide Modal</Text>
-          </TouchableHighlight>
-        </View>
-      </Modal>
+
+      <AddIconBottomSheet iconEvent={iconEvent} visible={visible} setVisible={setVisible} />
+      
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -133,6 +110,13 @@ const styles = StyleSheet.create({
   map: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
+  },
+  bottomNavigationView: {
+    backgroundColor: '#fff',
+    width: '100%',
+    height: 250,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
