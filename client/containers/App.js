@@ -67,7 +67,7 @@ export default function App() {
   return (
     
     <View style={styles.container}>
-      <MapRender region={region} coords={coords} setRegion={setRegion} />
+      <MapRender region={region} coords={coords} setRegion={setRegion} setCoords={setCoords} />
       <StatusBar style="auto" />
       <Text>Hello</Text>
     </View>

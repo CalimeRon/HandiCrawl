@@ -1,21 +1,12 @@
 import React, { useState, useEffect } from "react";
 import MapView from "react-native-maps";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  Image,
-  Pressable,
-  Alert,
-  Modal,
-  TouchableHighlight,
-} from "react-native";
+import { StyleSheet, Text, View, Dimensions, Image, Pressable, Alert, Modal, TouchableHighlight } from "react-native";
 import { BottomSheet } from 'react-native-btr';
-import AddIconBottomSheet from '../components/AddIconBottomSheetComponent'
+import AddIconBottomSheet from '../components/AddIconBottomSheetComponent';
+import renderIcon from '../services/iconRendering';
 
 
-export default function MapRender({ region, setRegion, coords }) {
+export default function MapRender({ region, setRegion, coords, setCoords }) {
   const [iconEvent, setIconEvent] = useState({});
   const [visible, setVisible] = useState(false);
 
@@ -28,29 +19,11 @@ export default function MapRender({ region, setRegion, coords }) {
 
   let dimension = setDimension(region);
 
-  // Access the icon png depending on the iconId parameter inside the location object
-  const iconToRender = (iconId) => {
-    switch (iconId) {
-      case "warning":
-        return require("../assets/warning.png");
-      case "easyAccess":
-        return require("../assets/easyAccess.png");
-      case "elevator":
-        return require("../assets/elevator.png");
-      case "ramp":
-        return require("../assets/ramp.png");
-      case "stairs":
-        return require("../assets/stairs.png");
-      default:
-        return require("../assets/smilou.png");
-    }
-  };
-
   //populate the map by looping through each icon coordinate to render and creating a Marker component for each
   const populateRegion = coords.map((coordItem) => {
     return (
       <MapView.Marker
-        key={coordItem._id}
+        key={coordItem.latitude + coordItem.longitude} //TODO: change that
         coordinate={coordItem}
         title={
           coordItem.placeName +
@@ -64,7 +37,7 @@ export default function MapRender({ region, setRegion, coords }) {
       >
         <Image
           style={{ resizeMode: "contain", width: dimension, height: dimension, flex: 1 }}
-          source={iconToRender(coordItem.icon)}
+          source={renderIcon(coordItem.icon)}
         />
       </MapView.Marker>
     );
@@ -94,8 +67,8 @@ export default function MapRender({ region, setRegion, coords }) {
         {populateRegion}
       </MapView>
 
-      <AddIconBottomSheet iconEvent={iconEvent} visible={visible} setVisible={setVisible} />
-      
+      <AddIconBottomSheet iconEvent={iconEvent} visible={visible} setVisible={setVisible} setCoords={setCoords} coords={coords} />
+
     </View>
   );
 }
