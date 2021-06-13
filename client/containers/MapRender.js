@@ -31,11 +31,7 @@ export default function MapRender({ region, setRegion, coords, setCoords, stillI
           key={coordItem.latitude + coordItem.longitude} //TODO: change that
           coordinate={coordItem}
           title={
-            coordItem.placeName +
-            " " +
-            coordItem.latitude +
-            " " +
-            coordItem.longitude
+            coordItem.placeName
           }
           description={coordItem.description}
           anchor={{ x: 0.5, y: 0.5 }}

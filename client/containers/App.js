@@ -17,6 +17,7 @@ export default function App() {
   const [currentRegion, setCurrentRegion] = useState({});
   const [storedBounds, setStoredBounds] = useState({});
   const [stillInBounds, setStillInBounds] = useState(true);
+  const [rerenderFix, setRerenderFix] = useState(0);
   const maxZoom = 0.022;
 
   let success = false;
@@ -71,8 +72,15 @@ export default function App() {
         // console.log("in second theb", result, coords);
         setCoords(coords);
         setRegion(result.coords);
-      });
+      })
   }, []);
+
+  useEffect(() => {
+    let timer1 = setTimeout(() => setRerenderFix(1), 5000)
+    return () => {
+      clearTimeout(timer1)
+    }
+  }, [])
 
   //on first load, get authorization for location...
   const firstLoad = async () => {
@@ -113,18 +121,19 @@ export default function App() {
   if (!locationLoaded) {
     console.log("not loaded");
     return (
-      <View
-      style={styles.splash}>
+      <View>
         <Image
-          style={{resizeMode: 'stretch'}}
+          style={{resizeMode: 'contain'}}
           source={require('../assets/sploush2.png')}
         />
+
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
+      <View style={{paddingTop: rerenderFix}} >
       <MapRender
         region={region}
         coords={coords}
@@ -133,6 +142,7 @@ export default function App() {
         stillInBounds={stillInBounds}
         maxZoom={maxZoom}
       />
+      </View>
       <StatusBar style="auto" />
       <Text>Hello</Text>
     </View>
@@ -148,6 +158,8 @@ const styles = StyleSheet.create({
   },
   splash: {
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    backgroundColor: '#A8EBF4',
+    resizeMode: 'cover'
 }
 });
