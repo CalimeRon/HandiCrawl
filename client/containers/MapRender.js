@@ -9,6 +9,7 @@ import renderIcon from '../services/iconRendering';
 export default function MapRender({ region, setRegion, coords, setCoords, stillInBounds }) {
   const [iconEvent, setIconEvent] = useState({});
   const [visible, setVisible] = useState(false);
+  const maxZoom = 0.022;
 
 
   //adapt the size of the icons on the map depending on the zoom level
@@ -20,11 +21,12 @@ export default function MapRender({ region, setRegion, coords, setCoords, stillI
 
   let dimension = setDimension(region);
   let populateRegion;
-  if (coords.length !== 0) {
-    console.log('putain de coords', coords[0])
+  if (coords.length !== 0 && coords !== undefined && region.latitudeDelta < maxZoom) {
+    // console.log('putain de coords', coords[0])
     populateRegion = coords.map((coordItem) => {
       return (
         <MapView.Marker
+          style={{width: 50, height: 50}}
           key={coordItem.latitude + coordItem.longitude} //TODO: change that
           coordinate={coordItem}
           title={
@@ -44,7 +46,7 @@ export default function MapRender({ region, setRegion, coords, setCoords, stillI
         </MapView.Marker>
       );
     })
-  }
+  } else populateRegion = null;
   //populate the map by looping through each icon coordinate to render and creating a Marker component for each
 
   
@@ -73,7 +75,7 @@ export default function MapRender({ region, setRegion, coords, setCoords, stillI
       </MapView>
 
       <AddIconBottomSheet iconEvent={iconEvent} visible={visible} setVisible={setVisible} setCoords={setCoords} coords={coords} />
-
+      
     </View>
   );
 }

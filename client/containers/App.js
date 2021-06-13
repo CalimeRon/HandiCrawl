@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, Text, View, Image } from "react-native";
 import MapRender from "./MapRender";
 import AppLoading from "expo-app-loading";
 import * as Location from "expo-location";
@@ -17,6 +17,7 @@ export default function App() {
   const [currentRegion, setCurrentRegion] = useState({});
   const [storedBounds, setStoredBounds] = useState({});
   const [stillInBounds, setStillInBounds] = useState(true);
+
   let success = false;
 
   //function to get new icons from the API service
@@ -109,14 +110,14 @@ export default function App() {
   if (!locationLoaded) {
     console.log("not loaded");
     return (
-      <View>
-        <Text> Loading... </Text>
+      <View
+      style={styles.splash}>
+        <Image
+          style={{resizeMode: 'stretch'}}
+          source={require('../assets/sploush2.png')}
+        />
       </View>
     );
-  }
-
-  if (locationLoaded) {
-    console.log(region, coords)
   }
 
   return (
@@ -141,4 +142,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  splash: {
+    alignItems: "center",
+    justifyContent: "center"
+}
 });

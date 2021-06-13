@@ -1,7 +1,7 @@
 import db from "../fakedb";
 import { getDistance, getBoundsOfDistance } from "geolib";
 const regionToLoad = 3000; //max distance from the current region to load icons from
-const maxZoom = 0.022;
+
 import dbh from "./databaseConnection";
 
 export function getBounds (region) {
@@ -22,7 +22,7 @@ export function getBounds (region) {
 export async function getCoords(region) {
   console.log(" entered getcoords, fetching not initiated", region);
   if (!region) return;
-  if (region.latitudeDelta > maxZoom) return [];
+
   console.log("fetching initiated", region);
   const coordinates = dbh.collection("coordinates");
   const bounds = getBounds(region)
@@ -36,4 +36,10 @@ export async function getCoords(region) {
     coordsArray.push(doc.data());
   });
   return coordsArray;
+}
+
+export async function postNewCoord (coord) {
+  console.log("in async posting", coord)
+  const res = await dbh.collection("coordinates").add(coord)
+  console.log('Added document with ID:', res.id);
 }

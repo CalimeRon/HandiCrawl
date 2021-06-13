@@ -7,8 +7,11 @@ import {
   View,
   TouchableOpacity,
   Image,
+  Pressable,
 } from "react-native";
 import renderIcon from "../services/iconRendering";
+import { postNewCoord } from "../services/apiServices";
+import DescriptionModal from "./DescriptionModal";
 
 export default function AddIconBottomSheet({
   iconEvent,
@@ -17,10 +20,63 @@ export default function AddIconBottomSheet({
   setCoords,
   coords,
 }) {
-  if (!visible) return <View></View>
+  const [allIcons, setAllIcons] = useState([
+    "warning",
+    "easyAccess",
+    "elevator",
+    "ramp",
+    "stairs",
+  ]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const iconButton = allIcons.map((iconString) => {
+    return (
+      <TouchableOpacity
+        key={iconString}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 0,
+        }}
+        onPress={() => {
+          const newCoordinate = {
+            placeName: "test",
+            icon: iconString,
+            latitude: iconEvent.coordinate.latitude,
+            longitude: iconEvent.coordinate.longitude,
+            description: "testouille",
+          };
+          setCoords([...coords, newCoordinate]);
+          postNewCoord(newCoordinate);
+          setVisible(false);
+        }}
+      >
+        <Image
+          source={renderIcon(iconString)}
+          resizeMode="contain"
+          style={{ width: 60, height: 60, marginBottom: 10 }}
+        />
+        <Text>{iconString}</Text>
+      </TouchableOpacity>
+    );
+  });
+  if (!visible) return <View></View>;
   console.log("icon event", iconEvent);
 
+
+  function toggleModal () {
+    console.log("entered modal")
+    if (!modalVisible) {
+      setModalVisible(true)
+      // setVisible(false)
+    } else {
+      setModalVisible(false)
+      // setVisible(true)
+    }
+  }
+
   return (
+    <View>
     <BottomSheet
       visible={visible}
       onBackButtonPress={() => setVisible(false)}
@@ -28,42 +84,23 @@ export default function AddIconBottomSheet({
     >
       <View style={styles.bottomNavigationView}>
         <Text>So you want to add an icon buddy ? </Text>
-        <Text>hihihi</Text>
-        <View style={{ flexWrap: "wrap" }}>
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onPress={() => {
-              setCoords([
-                ...coords,
-                {
-                  _id:
-                    iconEvent.coordinate.latitude +
-                    iconEvent.coordinate.longitude,
-                  placeName: "test",
-                  icon: "warning",
-                  latitude: iconEvent.coordinate.latitude,
-                  longitude: iconEvent.coordinate.longitude,
-                  description: "testouille",
-                },
-              ]);
-              setVisible(false)
-            }}
-          >
-            <Image
-              source={renderIcon("warning")}
-              resizeMode="contain"
-              style={{ width: 40, height: 40 }}
-            />
-          </TouchableOpacity>
-        </View>
+        <View style={styles.buttonsContainer}>{iconButton}</View>
       </View>
-
+      <Pressable
+        style={[styles.button, styles.buttonOpen]}
+        onPress={() => toggleModal()}
+      >
+        <Text style={styles.textStyle}>Show Modal</Text>
+      </Pressable>
+      
       <Button title="cancel" onPress={() => setVisible(false)}></Button>
     </BottomSheet>
+    {modalVisible ? <DescriptionModal
+      modalVisible={modalVisible}
+      setModalVisible={setModalVisible}
+      toggleModal={toggleModal}
+    /> : null}
+    </View>
   );
 }
 
@@ -72,8 +109,35 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     width: "100%",
     height: 250,
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "column",
+    zIndex: -1,
+  },
+  title: {
+    flex: 1,
+  },
+  buttonsContainer: {
+    flex: 3,
+    flexWrap: "wrap",
+    flexDirection: "column",
+    // backgroundColor: 'blue',
+    marginTop: 20,
+    justifyContent: "center",
+    // alignItems: 'center',
+    width: 400,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
