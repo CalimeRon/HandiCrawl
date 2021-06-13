@@ -9,6 +9,7 @@ import renderIcon from '../services/iconRendering';
 export default function MapRender({ region, setRegion, coords, setCoords, stillInBounds }) {
   const [iconEvent, setIconEvent] = useState({});
   const [visible, setVisible] = useState(false);
+  const [bottomSheetTriggered, setBottomSheetTriggered] = useState(false);
   const maxZoom = 0.022;
 
 
@@ -69,12 +70,15 @@ export default function MapRender({ region, setRegion, coords, setCoords, stillI
         onLongPress={(e) => {
           setIconEvent(e.nativeEvent)
           setVisible(true)
+          setBottomSheetTriggered(true)
         }}
       >
         {populateRegion}
       </MapView>
 
-      <AddIconBottomSheet iconEvent={iconEvent} visible={visible} setVisible={setVisible} setCoords={setCoords} coords={coords} />
+      {bottomSheetTriggered ?
+        <AddIconBottomSheet iconEvent={iconEvent} visible={visible} setVisible={setVisible} setBottomSheetTriggered={setBottomSheetTriggered} setCoords={setCoords} coords={coords} />
+        : null}
       
     </View>
   );

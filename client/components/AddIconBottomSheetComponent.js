@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
   Image,
   Pressable,
+  TextInput,
 } from "react-native";
+import * as Location from 'expo-location'
 import renderIcon from "../services/iconRendering";
 import { postNewCoord } from "../services/apiServices";
 import DescriptionModal from "./DescriptionModal";
@@ -20,14 +22,9 @@ export default function AddIconBottomSheet({
   setCoords,
   coords,
 }) {
-  const [allIcons, setAllIcons] = useState([
-    "warning",
-    "easyAccess",
-    "elevator",
-    "ramp",
-    "stairs",
-  ]);
+  const [allIcons, setAllIcons] = useState(["warning", "easyAccess", "elevator", "ramp", "stairs"]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [placeName, onChangePlaceName] = useState('location name')
   const iconButton = allIcons.map((iconString) => {
     return (
       <TouchableOpacity
@@ -63,6 +60,10 @@ export default function AddIconBottomSheet({
   // if (!visible) return <View></View>;
   console.log("icon event", iconEvent);
 
+  useEffect(() => {
+    Location.reverseGeocodeAsync({ latitude: iconEvent.coordinate.latitude, longitude: iconEvent.coordinate.longitude })
+      .then(result => console.log(result));
+  }, [modalVisible])
 
   function toggleModal () {
     console.log("entered modal")
