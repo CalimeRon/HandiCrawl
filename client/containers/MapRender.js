@@ -6,11 +6,11 @@ import AddIconBottomSheet from '../components/AddIconBottomSheetComponent';
 import renderIcon from '../services/iconRendering';
 
 
-export default function MapRender({ region, setRegion, coords, setCoords, stillInBounds }) {
+export default function MapRender({ region, setRegion, coords, setCoords, stillInBounds, maxZoom }) {
   const [iconEvent, setIconEvent] = useState({});
   const [visible, setVisible] = useState(false);
   const [bottomSheetTriggered, setBottomSheetTriggered] = useState(false);
-  const maxZoom = 0.022;
+
 
 
   //adapt the size of the icons on the map depending on the zoom level

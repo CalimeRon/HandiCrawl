@@ -17,17 +17,19 @@ export default function App() {
   const [currentRegion, setCurrentRegion] = useState({});
   const [storedBounds, setStoredBounds] = useState({});
   const [stillInBounds, setStillInBounds] = useState(true);
+  const maxZoom = 0.022;
 
   let success = false;
 
   //function to get new icons from the API service
-  const getNewIcons = async (region, storedBounds) => {
-    const newCoords = await getCoords(region, storedBounds);
+  const getNewIcons = async (region) => {
+    const newCoords = await getCoords(region);
     if (newCoords) {
       setCoords(newCoords);
       setStillInBounds(true)
     }
   };
+  // console.log("coords", coords)
 
   const updateMapElements = async () => {
     if (!region) return;
@@ -39,9 +41,10 @@ export default function App() {
       region.longitude < storedBounds.maxLong &&
       locationLoaded === true
     ) {
-      console.log("not sending request");
+      console.log("not sending request", region);
       return;
     }
+    if (region.latitudeDelta && region.latitudeDelta > maxZoom) return console.log("too far, not fetching");
     setStoredBounds(getBounds(region));
     setStillInBounds(false)
     await getNewIcons(region);
@@ -128,6 +131,7 @@ export default function App() {
         setRegion={setRegion}
         setCoords={setCoords}
         stillInBounds={stillInBounds}
+        maxZoom={maxZoom}
       />
       <StatusBar style="auto" />
       <Text>Hello</Text>

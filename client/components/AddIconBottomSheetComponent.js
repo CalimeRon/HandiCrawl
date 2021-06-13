@@ -58,7 +58,7 @@ export default function AddIconBottomSheet({
     );
   });
   // if (!visible) return <View></View>;
-  console.log("icon event", iconEvent);
+  // console.log("icon event", iconEvent);
 
   useEffect(() => {
     Location.reverseGeocodeAsync({ latitude: iconEvent.coordinate.latitude, longitude: iconEvent.coordinate.longitude })
@@ -66,7 +66,7 @@ export default function AddIconBottomSheet({
   }, [modalVisible])
 
   function toggleModal () {
-    console.log("entered modal")
+    // console.log("entered modal")
     if (!modalVisible) {
       setModalVisible(true)
       setVisible(false)

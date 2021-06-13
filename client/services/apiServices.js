@@ -5,7 +5,7 @@ const regionToLoad = 3000; //max distance from the current region to load icons 
 import dbh from "./databaseConnection";
 
 export function getBounds (region) {
-  console.log("in getbounds, the region is", region)
+  // console.log("in getbounds, the region is", region)
   const bounds = getBoundsOfDistance(
     { latitude: region.latitude, longitude: region.longitude },
     regionToLoad
@@ -32,14 +32,14 @@ export async function getCoords(region) {
     .get();
   const coordsArray = [];
   query.docs.forEach((doc) => {
-    console.log("doc data", doc.data())
+    // console.log("doc data", doc.data())
     coordsArray.push(doc.data());
   });
   return coordsArray;
 }
 
 export async function postNewCoord (coord) {
-  console.log("in async posting", coord)
+  // console.log("in async posting", coord)
   const res = await dbh.collection("coordinates").add(coord)
-  console.log('Added document with ID:', res.id);
+  // console.log('Added document with ID:', res.id);
 }
