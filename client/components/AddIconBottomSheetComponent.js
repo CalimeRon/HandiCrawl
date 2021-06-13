@@ -60,7 +60,7 @@ export default function AddIconBottomSheet({
       </TouchableOpacity>
     );
   });
-  if (!visible) return <View></View>;
+  // if (!visible) return <View></View>;
   console.log("icon event", iconEvent);
 
 
@@ -68,10 +68,10 @@ export default function AddIconBottomSheet({
     console.log("entered modal")
     if (!modalVisible) {
       setModalVisible(true)
-      // setVisible(false)
+      setVisible(false)
     } else {
       setModalVisible(false)
-      // setVisible(true)
+      setVisible(true)
     }
   }
 
@@ -95,11 +95,20 @@ export default function AddIconBottomSheet({
       
       <Button title="cancel" onPress={() => setVisible(false)}></Button>
     </BottomSheet>
-    {modalVisible ? <DescriptionModal
+    {/* {modalVisible ? <DescriptionModal
       modalVisible={modalVisible}
       setModalVisible={setModalVisible}
       toggleModal={toggleModal}
-    /> : null}
+    /> : null} */}
+      <BottomSheet
+        visible={modalVisible}
+        onBackButtonPress={() => toggleModal()}
+      onBackdropPress={() => toggleModal()}
+      >
+        <View style={styles.bottomNavigationView}>
+        <Text>So you want to add an icon buddy ? </Text>
+      </View>
+    </BottomSheet>
     </View>
   );
 }
