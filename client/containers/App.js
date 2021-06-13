@@ -41,7 +41,7 @@ export default function App() {
       region.longitude < storedBounds.maxLong &&
       locationLoaded === true
     ) {
-      console.log("not sending request", region);
+      console.log("not sending request");
       return;
     }
     if (region.latitudeDelta && region.latitudeDelta > maxZoom) return console.log("too far, not fetching");
@@ -63,12 +63,12 @@ export default function App() {
   useEffect(() => {
     firstLoad()
       .then((result) => {
-        console.log("first then", result);
+        // console.log("first then", result);
         const theCoords = getCoords(result.coords);
         return { result: result, coords: theCoords };
       })
       .then(({ result, coords }) => {
-        console.log("in second theb", result, coords);
+        // console.log("in second theb", result, coords);
         setCoords(coords);
         setRegion(result.coords);
       });

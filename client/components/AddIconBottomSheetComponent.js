@@ -60,14 +60,16 @@ export default function AddIconBottomSheet({
   // if (!visible) return <View></View>;
   // console.log("icon event", iconEvent);
 
-  useEffect(() => {
-    Location.reverseGeocodeAsync({ latitude: iconEvent.coordinate.latitude, longitude: iconEvent.coordinate.longitude })
-      .then(result => console.log(result));
-  }, [modalVisible])
 
-  function toggleModal () {
+
+  async function toggleModal () {
     // console.log("entered modal")
     if (!modalVisible) {
+      const location = await Location.reverseGeocodeAsync({
+        latitude: iconEvent.coordinate.latitude,
+        longitude: iconEvent.coordinate.longitude
+      })
+      onChangePlaceName(`${location[0].street} ${location[0].name}`)
       setModalVisible(true)
       setVisible(false)
     } else {
@@ -75,6 +77,8 @@ export default function AddIconBottomSheet({
       setVisible(true)
     }
   }
+
+  console.log("placeName", placeName)
 
   return (
     <View>
@@ -107,7 +111,11 @@ export default function AddIconBottomSheet({
       onBackdropPress={() => toggleModal()}
       >
         <View style={styles.bottomNavigationView}>
-        <Text>So you want to add an icon buddy ? </Text>
+          <Text>So you want to add an icon buddy ? </Text>
+          <TextInput
+            onChangeText={text => onChangePlaceName(text)}
+            value={placeName}
+          />
       </View>
     </BottomSheet>
     </View>

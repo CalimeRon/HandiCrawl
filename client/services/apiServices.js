@@ -20,7 +20,7 @@ export function getBounds (region) {
 }
 
 export async function getCoords(region) {
-  console.log(" entered getcoords, fetching not initiated", region);
+  // console.log(" entered getcoords, fetching not initiated", region);
   if (!region) return;
 
   console.log("fetching initiated", region);
