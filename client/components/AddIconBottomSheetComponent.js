@@ -107,7 +107,7 @@ export default function AddIconBottomSheet({
     }
   }
 
-  console.log("placeName", placeName);
+  // console.log("placeName", placeName);
 
   return (
     <View>

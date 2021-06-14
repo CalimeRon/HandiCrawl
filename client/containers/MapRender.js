@@ -15,7 +15,7 @@ import {
 import { BottomSheet } from "react-native-btr";
 import AddIconBottomSheet from "../components/AddIconBottomSheetComponent";
 import { renderIcon } from "../services/iconFactory";
-import CalloutComponent from "../components/CalloutComponent";
+// import CalloutComponent from "../components/CalloutComponent";
 
 export default function MapRender({
   region,
@@ -29,6 +29,21 @@ export default function MapRender({
   const [visible, setVisible] = useState(false);
   const [bottomSheetTriggered, setBottomSheetTriggered] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [currentCallout, setCurrentCallout] = useState(null);
+  const [currentIconSelected, setCurrentIconSelected] = useState(null);
+
+
+  useEffect(() => {
+    console.log('in useEffect', currentIconSelected, currentCallout, coords)
+    if (!currentIconSelected) return;
+    const iconSelected = coords.filter(coord => {
+      return (coord.latitude === currentIconSelected.latitude
+      && coord.longitude === currentIconSelected.longitude)
+    })
+    setCurrentCallout(iconSelected[0])
+    console.log("current callout",currentCallout)
+  }, [currentIconSelected])
+
   //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
     if (!region) return;
@@ -48,7 +63,9 @@ export default function MapRender({
     region.latitudeDelta < maxZoom
   ) {
     populateRegion = coords.map((coordItem) => {
+      console.log("firing populate region")
       return (
+        
         <View
           key={coordItem.latitude + coordItem.longitude}
           style={styles.markerContainer}
@@ -56,10 +73,12 @@ export default function MapRender({
           <MapView.Marker
             style={styles.marker}
             coordinate={coordItem}
-            // title={coordItem.placeName}
-            // description={coordItem.description}
             anchor={{ x: 0.5, y: 0.5 }}
-            onPress={() => setModalVisible(true)}
+            onPress={(e) => {
+              console.log("populating icons, coorditem=", e.nativeEvent)
+              setModalVisible(true)
+              setCurrentIconSelected(e.nativeEvent.coordinate)
+            }}
           >
             <View>
               <Image
@@ -119,12 +138,16 @@ export default function MapRender({
           coords={coords}
         />
       ) : null}
-      <View style={styles.modalContainer}>
+      {currentCallout 
+        ?
+        <View style={styles.modalContainer}>
         <ModalCallout
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
+          currentCallout={currentCallout}
         />
-      </View>
+      </View> : null }
+      
     </View>
   );
 }
@@ -158,8 +181,6 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalContainer: {
-    alignItems: "center",
-    justifyContent: "center",
     flex: 1,
   },
   marker: {
