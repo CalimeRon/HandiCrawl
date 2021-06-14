@@ -46,6 +46,7 @@ export default function App() {
   const [rerenderFix, setRerenderFix] = useState(0);
   const maxZoom = 0.022;
 
+
   //load custom fonts for the app
   let [fontsLoaded] = useFonts({
     K2D_100Thin,

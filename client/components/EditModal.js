@@ -7,88 +7,115 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   ScrollView,
+  TextInput,
 } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { renderIcon, renderTitle } from "../services/iconFactory";
+import { BlurView } from "expo-blur";
 const iconDimension = 50;
 
-export default function ModalCallout({
+export default function EditModal({
   modalVisible,
   setModalVisible,
   currentCallout,
+  editModalScreen,
+  setEditModalScreen,
+  toggleCalloutToEdit,
 }) {
   if (!currentCallout) return null;
-  console.log("in modal", currentCallout);
+  const [temporaryHandiMarker, setTemporaryHandiMarker] = useState(null);
+
+  function clearEditModal() {
+    setTemporaryHandiMarker(null);
+  }
+
+  useEffect(() => {
+    setTemporaryHandiMarker(currentCallout);
+  }, []);
+
+  console.log("temp handi marker", temporaryHandiMarker);
+
+  console.log("in edit modal", modalVisible, "editmoda ", editModalScreen);
   return (
     <Modal
       transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => setModalVisible(false)}
+      visible={editModalScreen}
+      onRequestClose={() => toggleCalloutToEdit()}
       animationType="slide"
       // style={{  margin: 0, alignItems: 'center', justifyContent: 'center' }}
     >
-      <TouchableOpacity
-        style={styles.modalContainer}
-        onPress={() => setModalVisible(false)}
+      <BlurView
+        intensity={150}
+        style={[StyleSheet.absoluteFill, styles.nonBlurredContent]}
       >
-        <TouchableOpacity
-          style={styles.modal}
-          onPress={() => console.log("do nothing")}
-          activeOpacity={1}
-        >
-          <View style={styles.bubble}>
+        <View style={styles.bubble}>
+          <Text style={[styles.generalText, styles.titleText]}>
+            Edit Handimarker
+          </Text>
+          <Text style={[styles.generalText, styles.propertyText]}>
+            Edit icon...
+          </Text>
+          <View style={styles.editContainer}>
             <View style={styles.iconImgContainer}>
               <Image
                 source={renderIcon(currentCallout.icon)}
                 style={styles.generalIcon}
               />
-            </View>
-            <View style={styles.thumbsContainer}>
-              <Image
-                source={require("../assets/thumbsup.png")}
-                style={[styles.generalIcon, styles.thumbsIcon]}
-                resizeMode="contain"
-              />
-              <Text style={[styles.generalText, styles.scoreText]}>
-                {currentCallout.score}
-              </Text>
-              <Image
-                source={require("../assets/thumbsdown.png")}
-                style={[styles.generalIcon, styles.thumbsIcon]}
-                resizeMode="contain"
-              />
-            </View>
-            <View style={styles.iconTitle}>
-              <Text style={[styles.generalText, styles.iconTitleText]}>
+              <Text style={styles.iconText}>
                 {renderTitle(currentCallout.icon)}
               </Text>
             </View>
-            <View style={styles.editBubble}>
-              <Image
-                source={require("../assets/trash.png")}
-                style={[styles.trashIcon]}
-                resizeMode="contain"
-              />
-              <Image
-                source={require("../assets/edit.png")}
-                style={[styles.trashIcon, styles.editIcon]}
-                resizeMode="contain"
-              />
-            </View>
-
-            <View style={styles.middleBubble}>
-              <View style={styles.locationContainer}>
-                <Text style={[styles.generalText, styles.placeNameText]}>
-                  {currentCallout.placeName}
-                </Text>
-                <Text style={[styles.generalText, styles.descriptionText]}>
-                  {currentCallout.description}
-                </Text>
-              </View>
-            </View>
+            <Image
+              source={require("../assets/edit.png")}
+              style={[styles.trashIcon, styles.editIcon]}
+              resizeMode="contain"
+            />
           </View>
-        </TouchableOpacity>
-      </TouchableOpacity>
+          <Text style={[styles.generalText, styles.propertyText]}>
+            Edit place name...
+          </Text>
+          <View style={styles.editContainer}>
+            <TextInput
+              style={[styles.iconText, styles.placeNameText]}
+              onChangeText={(text) => {
+                console.log(text);
+                setTemporaryHandiMarker({
+                  ...temporaryHandiMarker,
+                  placeName: text,
+                });
+                console.log("newtemp", temporaryHandiMarker);
+              }}
+              onFocus={(whatisit) => console.log("in focus", whatisit)}
+            >
+              {temporaryHandiMarker
+                ? temporaryHandiMarker.placeName
+                : currentCallout.placeName}
+            </TextInput>
+          </View>
+          
+          <Text style={[styles.generalText, styles.propertyText]}>
+            Edit description...
+          </Text>
+          <View style={[styles.editContainer, styles.descriptionContainer]}>
+            <TextInput
+              style={[styles.iconText, styles.placeNameText]}
+              onChangeText={(text) => {
+                console.log(text);
+                setTemporaryHandiMarker({
+                  ...temporaryHandiMarker,
+                  description: text,
+                });
+                console.log("newtemp", temporaryHandiMarker);
+              }}
+              onFocus={(whatisit) => console.log("in focus", whatisit)}
+            >
+              {temporaryHandiMarker
+                ? temporaryHandiMarker.description
+                : currentCallout.description}
+            </TextInput>
+          </View>
+        </View>
+      </BlurView>
     </Modal>
   );
 }
@@ -97,24 +124,32 @@ const styles = StyleSheet.create({
   bubble: {
     flexDirection: "column",
     borderRadius: 20,
-    width: "100%",
-    height: "100%",
+    // width: "100%",
+    width: "90%",
+    height: 300,
+    // height: "100%",
     position: "absolute",
+    bottom: "35%",
     backgroundColor: "#EAF0F2",
-    paddingTop: "4%",
+    paddingTop: "0%",
     borderRadius: 20,
-    paddingLeft: "1%",
-    paddingRight: "1%",
-    alignItems: "center",
+    // paddingLeft: "1%",
+    // paddingRight: "1%",
+    // alignItems: "center",
     alignSelf: "center",
-    zIndex: 1,
+    // justifyContent: "center",
+    // zIndex: 1,
     elevation: 23,
+    // backgroundColor: "orange",
   },
   bubbleIcon: {
     flexDirection: "column",
     borderColor: "#476C7D",
     borderWidth: 5,
     borderRadius: 10,
+  },
+  descriptionContainer: {
+    height: 60,
   },
   descriptionText: {
     fontSize: 20,
@@ -133,6 +168,20 @@ const styles = StyleSheet.create({
     right: 10,
     alignSelf: "flex-end",
   },
+  editContainer: {
+    backgroundColor: "#CFE3E3",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+    // borderWidth: 2,
+    // borderColor: "#476C7D",
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 4,
+    padding: 1,
+    justifyContent: "space-between",
+    elevation: 5,
+  },
   editIcon: {
     width: iconDimension - 30,
     height: iconDimension - 20,
@@ -150,18 +199,22 @@ const styles = StyleSheet.create({
     color: "#1C333E",
   },
   iconImgContainer: {
-    borderWidth: 5,
-    borderRadius: 40,
-    overflow: "hidden",
-    borderColor: "#476C7D",
-    zIndex: 1,
-    top: -45,
-    position: "relative",
-    elevation: 15,
+    // borderWidth: 0.5,
+    // borderRadius: 40,
+    // borderColor: "#476C7D",
+    // overflow: "hidden",
+    // zIndex: 1,
+    // top: -120,
+    // position: "relative",
+    // elevation: 15,
     justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: "orange",
+    flexDirection: "row",
+    // backgroundColor: "yellow",
     // padding: "1%",
+  },
+  iconText: {
+    // marginLeft: 5,
   },
   iconTitle: {
     alignSelf: "center",
@@ -193,23 +246,40 @@ const styles = StyleSheet.create({
     top: 80,
     width: "100%",
     position: "absolute",
+    borderTopColor: "#dcdddc",
+    borderTopWidth: 1,
   },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  modal: {
-    width: "90%",
-    height: 220,
-  },
+  modal: {},
   placeNameText: {
-    fontSize: 20,
-    fontFamily: "K2D_800ExtraBold",
-    textAlign: "center",
+    // fontSize: 20,
+    // fontFamily: "K2D_800ExtraBold",
+    // textAlign: "center",
+    backgroundColor: "#EAF0F2",
+    borderRadius: 10,
+    width: "80%",
+    alignSelf: "flex-start",
+    height: '100%'
+  },
+  propertyText: {
+    paddingLeft: 15,
+    fontFamily: "K2D_300Light_Italic",
+    fontSize: 10,
   },
   scoreText: {
     fontSize: 30,
+  },
+  titleText: {
+    textAlign: "center",
+    fontSize: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#dcdddc",
+    marginBottom: 1,
+    // backgroundColor: 'yellow'
   },
   thumbsContainer: {
     overflow: "hidden",

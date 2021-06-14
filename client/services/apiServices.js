@@ -24,21 +24,25 @@ export async function getCoords(region) {
   if (!region) return;
 
   console.log("fetching initiated", region);
-  
+
   // const coordinates = dbh.collection("coordinates");
-  // const bounds = getBounds(region)
+  // const bounds = getBounds(region);
   // const query = await coordinates
   //   .where("latitude", ">=", bounds.minLat)
   //   .where("latitude", "<=", bounds.maxLat)
   //   .get();
   // const coordsArray = [];
   // query.docs.forEach((doc) => {
-  //   // console.log("doc data", doc.data())
-  //   coordsArray.push(doc.data());
+  //   console.log("doc data", doc.id);
+  //   coordsArray.push({
+  //     ...doc.data(),
+  //     id: doc.id,
+  //   });
   // });
+  // console.log("coordsArray before leaving", coordsArray)
   // return coordsArray;
 
- // I keep this below to test without wasting requests to Firestore (since there's a quota)
+  // I keep this below to test without wasting requests to Firestore (since there's a quota)
   return [
     {
       _id: "60c3234d36ac69e8941637b0",

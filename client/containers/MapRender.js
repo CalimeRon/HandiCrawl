@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MapView from "react-native-maps";
-import ModalCallout from "../components/EditModal";
+import CalloutModal from "../components/CalloutModal";
+import EditModal from "../components/EditModal";
 import {
   StyleSheet,
   Text,
@@ -31,18 +32,20 @@ export default function MapRender({
   const [modalVisible, setModalVisible] = useState(false);
   const [currentCallout, setCurrentCallout] = useState(null);
   const [currentIconSelected, setCurrentIconSelected] = useState(null);
-
+  const [editModalScreen, setEditModalScreen] = useState(false);
 
   useEffect(() => {
-    console.log('in useEffect', currentIconSelected, currentCallout, coords)
+    // console.log('in useEffect', currentIconSelected, currentCallout, coords)
     if (!currentIconSelected) return;
-    const iconSelected = coords.filter(coord => {
-      return (coord.latitude === currentIconSelected.latitude
-      && coord.longitude === currentIconSelected.longitude)
-    })
-    setCurrentCallout(iconSelected[0])
-    console.log("current callout",currentCallout)
-  }, [currentIconSelected])
+    const iconSelected = coords.filter((coord) => {
+      return (
+        coord.latitude === currentIconSelected.latitude &&
+        coord.longitude === currentIconSelected.longitude
+      );
+    });
+    setCurrentCallout(iconSelected[0]);
+    // console.log("current callout",currentCallout)
+  }, [currentIconSelected]);
 
   //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
@@ -50,6 +53,7 @@ export default function MapRender({
     if (region.latitudeDelta > 0.005) return 30;
     else return 50;
   };
+
 
   //creates the conditional width and height of icons by calling setDimension
   let dimension = setDimension(region);
@@ -63,9 +67,8 @@ export default function MapRender({
     region.latitudeDelta < maxZoom
   ) {
     populateRegion = coords.map((coordItem) => {
-      console.log("firing populate region")
+      console.log("firing populate region");
       return (
-        
         <View
           key={coordItem.latitude + coordItem.longitude}
           style={styles.markerContainer}
@@ -75,9 +78,9 @@ export default function MapRender({
             coordinate={coordItem}
             anchor={{ x: 0.5, y: 0.5 }}
             onPress={(e) => {
-              console.log("populating icons, coorditem=", e.nativeEvent)
-              setModalVisible(true)
-              setCurrentIconSelected(e.nativeEvent.coordinate)
+              // console.log("populating icons, coorditem=", e.nativeEvent)
+              setModalVisible(true);
+              setCurrentIconSelected(e.nativeEvent.coordinate);
             }}
           >
             <View>
@@ -103,6 +106,11 @@ export default function MapRender({
   } else populateRegion = null;
   //populate the map by looping through each icon coordinate to render and creating a Marker component for each
 
+  function toggleCalloutToEdit () {
+    setModalVisible(!modalVisible)
+    setEditModalScreen(!editModalScreen)
+}
+
   return (
     <View style={styles.container}>
       <MapView
@@ -127,7 +135,6 @@ export default function MapRender({
       >
         {populateRegion}
       </MapView>
-
       {bottomSheetTriggered ? (
         <AddIconBottomSheet
           iconEvent={iconEvent}
@@ -138,16 +145,30 @@ export default function MapRender({
           coords={coords}
         />
       ) : null}
-      {currentCallout 
-        ?
+      {currentCallout ? (
         <View style={styles.modalContainer}>
-        <ModalCallout
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
-          currentCallout={currentCallout}
-        />
-      </View> : null }
-      
+          <CalloutModal
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            currentCallout={currentCallout}
+            editModalScreen={editModalScreen}
+            setEditModalScreen={setEditModalScreen}
+            toggleCalloutToEdit={toggleCalloutToEdit}
+          />
+        </View>
+      ) : null}
+      {editModalScreen ? (
+        <View style={styles.modalContainer}>
+          <EditModal
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            currentCallout={currentCallout}
+            editModalScreen={editModalScreen}
+            setEditModalScreen={setEditModalScreen}
+            toggleCalloutToEdit={toggleCalloutToEdit}
+          />
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -184,7 +205,7 @@ const styles = StyleSheet.create({
     // flex: 1,
     // justifyContent: 'center',
     // flexDirection: 'column',
-    position: 'absolute',
+    position: "absolute",
   },
   marker: {
     // backgroundColor: 'blue'

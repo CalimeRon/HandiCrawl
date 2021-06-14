@@ -1,7 +1,7 @@
 
   // Access the icon png depending on the iconId parameter inside the location object
 export function renderIcon (iconId) {
-  console.log('in renderIcon, iconid=', iconId)
+  // console.log('in renderIcon, iconid=', iconId)
   switch (iconId) {
     case "warning":
       return require("../assets/warning.png");
