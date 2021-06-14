@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MapView from "react-native-maps";
+import ModalCallout from "../components/ModalCallout";
 import {
   StyleSheet,
   Text,
@@ -13,8 +14,8 @@ import {
 } from "react-native";
 import { BottomSheet } from "react-native-btr";
 import AddIconBottomSheet from "../components/AddIconBottomSheetComponent";
-import {renderIcon} from "../services/iconFactory";
-import CalloutComponent from '../components/CalloutComponent'
+import { renderIcon } from "../services/iconFactory";
+import CalloutComponent from "../components/CalloutComponent";
 
 export default function MapRender({
   region,
@@ -27,7 +28,7 @@ export default function MapRender({
   const [iconEvent, setIconEvent] = useState({});
   const [visible, setVisible] = useState(false);
   const [bottomSheetTriggered, setBottomSheetTriggered] = useState(false);
-
+  const [modalVisible, setModalVisible] = useState(false);
   //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
     if (!region) return;
@@ -35,7 +36,7 @@ export default function MapRender({
     else return 50;
   };
 
-  //creates the conditional width and height of icons by calling setDimension 
+  //creates the conditional width and height of icons by calling setDimension
   let dimension = setDimension(region);
 
   //populate region will render the actual icon for each coordinate loaded in the area
@@ -47,7 +48,6 @@ export default function MapRender({
     region.latitudeDelta < maxZoom
   ) {
     populateRegion = coords.map((coordItem) => {
-      
       return (
         <View
           key={coordItem.latitude + coordItem.longitude}
@@ -56,11 +56,12 @@ export default function MapRender({
           <MapView.Marker
             style={styles.marker}
             coordinate={coordItem}
-            title={coordItem.placeName}
-            description={coordItem.description}
+            // title={coordItem.placeName}
+            // description={coordItem.description}
             anchor={{ x: 0.5, y: 0.5 }}
+            onPress={() => setModalVisible(true)}
           >
-            <View >
+            <View>
               <Image
                 style={{
                   resizeMode: "contain",
@@ -72,9 +73,9 @@ export default function MapRender({
                 source={renderIcon(coordItem.icon)}
               />
             </View>
-            <MapView.Callout tooltip={true}>
+            <MapView.Callout tooltip={false}>
               {/*  */}
-              <CalloutComponent coordItem={coordItem} />
+              {/* <CalloutComponent coordItem={coordItem} /> */}
             </MapView.Callout>
           </MapView.Marker>
         </View>
@@ -118,6 +119,12 @@ export default function MapRender({
           coords={coords}
         />
       ) : null}
+      <View style={styles.modalContainer}>
+        <ModalCallout
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
+      </View>
     </View>
   );
 }
@@ -128,6 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 22,
   },
   map: {
     width: Dimensions.get("window").width,
@@ -142,6 +150,17 @@ const styles = StyleSheet.create({
   },
   markerContainer: {
     elevation: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
   },
   marker: {
     // backgroundColor: 'blue'

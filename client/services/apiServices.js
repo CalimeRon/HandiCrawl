@@ -25,40 +25,40 @@ export async function getCoords(region) {
 
   console.log("fetching initiated", region);
   
-  const coordinates = dbh.collection("coordinates");
-  const bounds = getBounds(region)
-  const query = await coordinates
-    .where("latitude", ">=", bounds.minLat)
-    .where("latitude", "<=", bounds.maxLat)
-    .get();
-  const coordsArray = [];
-  query.docs.forEach((doc) => {
-    // console.log("doc data", doc.data())
-    coordsArray.push(doc.data());
-  });
-  return coordsArray;
+  // const coordinates = dbh.collection("coordinates");
+  // const bounds = getBounds(region)
+  // const query = await coordinates
+  //   .where("latitude", ">=", bounds.minLat)
+  //   .where("latitude", "<=", bounds.maxLat)
+  //   .get();
+  // const coordsArray = [];
+  // query.docs.forEach((doc) => {
+  //   // console.log("doc data", doc.data())
+  //   coordsArray.push(doc.data());
+  // });
+  // return coordsArray;
 
-  //I keep this below to test without wasting requests to Firestore (since there's a quota)
-  // return [
-  //   {
-  //     _id: "60c3234d36ac69e8941637b0",
-  //     placeName: "Dans ton gros cul pourri",
-  //     icon: "ramp",
-  //     latitude: 44.43750100149944,
-  //     longitude: 26.09280906994737,
-  //     description: "entrance by the East Side - ramp available",
-  //     score: 0,
-  //   },
-  //   {
-  //     _id: "60c3234d226e1bda5b481c83",
-  //     placeName: "Ion Campineanu 29 bloc 6 Sc.1",
-  //     icon: "warning",
-  //     latitude: 44.438269898955824,
-  //     longitude: 26.094277233533187,
-  //     description: "floor not flat for wheelchairs",
-  //     score: 0,
-  //   },
-  // ];
+ // I keep this below to test without wasting requests to Firestore (since there's a quota)
+  return [
+    {
+      _id: "60c3234d36ac69e8941637b0",
+      placeName: "Dans ton gros cul pourri",
+      icon: "ramp",
+      latitude: 44.43750100149944,
+      longitude: 26.09280906994737,
+      description: "entrance by the East Side - ramp available",
+      score: 0,
+    },
+    {
+      _id: "60c3234d226e1bda5b481c83",
+      placeName: "Ion Campineanu 29 bloc 6 Sc.1",
+      icon: "warning",
+      latitude: 44.438269898955824,
+      longitude: 26.094277233533187,
+      description: "floor not flat for wheelchairs",
+      score: 0,
+    },
+  ];
 }
 
 export async function postNewCoord(coord) {

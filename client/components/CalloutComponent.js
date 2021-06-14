@@ -10,10 +10,13 @@ export default function CalloutComponent({ coordItem }) {
     <View style={styles.bubble}>
       <View style={styles.topBubble}>
         <View style={styles.bubbleIcon}>
-            <Image
+          
+          <Text style={{backgroundColor: 'orange', display: 'flex', flexDirection:'column', height: 30, justifyContent: 'flex-start'}}>
+          <Image
               source={renderIcon(coordItem.icon)}
-              style={{ width: 100, height: 100 }}
-              resizeMode='cover' />
+              style={{height: 30, width: 30}}
+              resizeMode="cover" />
+          </Text>  
 
           <Text>After image</Text>
         </View>
@@ -52,6 +55,7 @@ const styles = StyleSheet.create({
   bubbleIcon: {
     backgroundColor: "grey",
     flexDirection: "row",
+    height: 40,
   },
   iconImg: {
     width: 10,
