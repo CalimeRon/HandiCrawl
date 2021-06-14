@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MapView from "react-native-maps";
-import ModalCallout from "../components/ModalCallout";
+import ModalCallout from "../components/EditModal";
 import {
   StyleSheet,
   Text,
@@ -181,7 +181,10 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalContainer: {
-    flex: 1,
+    // flex: 1,
+    // justifyContent: 'center',
+    // flexDirection: 'column',
+    position: 'absolute',
   },
   marker: {
     // backgroundColor: 'blue'
