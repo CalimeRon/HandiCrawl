@@ -1,3 +1,5 @@
+
+//Fake DB before Firestore
 export default db = [
   {
     _id: "60c3234d36ac69e8941637b0",
@@ -5,7 +7,8 @@ export default db = [
     icon: 'ramp',
     latitude: 44.43750100149944,
     longitude: 26.09280906994737,
-    description: 'entrance by the East Side - ramp available'
+    description: 'entrance by the East Side - ramp available',
+    score: 0,
   },
   {
     _id: "60c3234d226e1bda5b481c83",
@@ -13,7 +16,8 @@ export default db = [
     icon: 'warning',
     latitude: 44.438269898955824,
     longitude: 26.094277233533187,
-    description: 'floor not flat for wheelchairs'
+    description: 'floor not flat for wheelchairs',
+    score: 0
   },
   {
     _id: "60c323a979867d4987d9ca70",

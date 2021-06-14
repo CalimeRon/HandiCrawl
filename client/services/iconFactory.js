@@ -1,6 +1,7 @@
 
   // Access the icon png depending on the iconId parameter inside the location object
-export default function renderIcon (iconId) {
+export function renderIcon (iconId) {
+  console.log('in renderIcon, iconid=', iconId)
   switch (iconId) {
     case "warning":
       return require("../assets/warning.png");
@@ -14,5 +15,23 @@ export default function renderIcon (iconId) {
       return require("../assets/stairs.png");
     default:
       return require("../assets/smilou.png");
+  }
+}
+
+
+export function renderTitle(string) {
+  switch (string) {
+    case "warning":
+      return "Warning";
+    case "easyAccess":
+      return "Easy access";
+    case "elevator":
+      return "Elevator";
+    case "ramp":
+      return "Dedicated ramp";
+    case "stairs":
+      return "Stairs";
+    default:
+      return null;
   }
 }

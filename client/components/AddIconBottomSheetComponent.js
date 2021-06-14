@@ -11,9 +11,9 @@ import {
   TextInput,
 } from "react-native";
 import * as Location from "expo-location";
-import renderIcon from "../services/iconRendering";
+import { renderIcon, renderTitle } from "../services/iconFactory";
 import { postNewCoord } from "../services/apiServices";
-import DescriptionModal from "./DescriptionModal";
+// import DescriptionModal from "./DescriptionModal";
 
 export default function AddIconBottomSheet({
   iconEvent,
@@ -32,46 +32,73 @@ export default function AddIconBottomSheet({
   const [modalVisible, setModalVisible] = useState(false);
   const [placeName, onChangePlaceName] = useState("location name");
   const [description, onChangeDescription] = useState("");
-  const [selectedIconString, setSelectedIconString] = useState('')
+  const [selectedIconString, setSelectedIconString] = useState("");
+  function hasNumber(string) {
+    return /\d/.test(string);
+  }
+  //map through all icons and render an icon inside the bottom sheet for each
+  //each icon is clickable, and on click, opens the second bottom sheet to add
+  //details before sending the post request to the db
   const iconButton = allIcons.map((iconString) => {
     return (
       <TouchableOpacity
         key={iconString}
         style={{
-          flexDirection: "row",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          zIndex: 0,
+          padding: 4,
+          borderStyle: "solid",
+          borderColor: "blue",
+          borderWidth: 1,
+          marginRight: 4,
+          marginBottom: 4,
         }}
         onPress={() => {
-          setSelectedIconString(iconString)
-          toggleModal()
+          setSelectedIconString(iconString);
+          toggleModal();
         }}
       >
         <Image
           source={renderIcon(iconString)}
           resizeMode="contain"
-          style={{ width: 60, height: 60, marginBottom: 10 }}
+          style={{
+            width: 60,
+            height: 60,
+            marginBottom: 10,
+            backgroundColor: "orange",
+          }}
         />
-        <Text>{iconString}</Text>
+        <Text style={{ backgroundColor: "blue" }}>
+          {renderTitle(iconString)}...
+        </Text>
       </TouchableOpacity>
     );
   });
-  // if (!visible) return <View></View>;
-  // console.log("icon event", iconEvent);
 
   useEffect(() => {
     console.log(placeName);
   }, [placeName]);
 
+  // Modal is now another Bottom sheet. Need to fix the name
+  // When you activate toggle modal you enter the 2nd bottom sheet which
+  //is used to give a description about an icon
   async function toggleModal() {
-    // console.log("entered modal")
     if (!modalVisible) {
+      //Get the street address thanks to reverseGeoCode
       const location = await Location.reverseGeocodeAsync({
         latitude: iconEvent.coordinate.latitude,
         longitude: iconEvent.coordinate.longitude,
       });
-      onChangePlaceName(`${location[0].street} ${location[0].name}`);
+      onChangePlaceName(
+        //if the location is a named place (like 'House of Parliament') render this
+        //otherwise render street + number
+        `${
+          hasNumber(location[0].name)
+            ? location[0].street + " " + location[0].name
+            : location[0].name
+        }`
+      );
       setModalVisible(true);
       setVisible(false);
     } else {
@@ -90,11 +117,10 @@ export default function AddIconBottomSheet({
         onBackdropPress={() => setVisible(false)}
       >
         <View style={styles.bottomNavigationView}>
-          <Text>So you want to add an icon buddy ? </Text>
+          <Text style={styles.header}>Click on the icon you want to add </Text>
           <View style={styles.buttonsContainer}>{iconButton}</View>
-        <Button title="cancel" onPress={() => setVisible(false)}></Button>
+          <Button title="cancel" onPress={() => setVisible(false)}></Button>
         </View>
-
       </BottomSheet>
       {/* {modalVisible ? <DescriptionModal
       modalVisible={modalVisible}
@@ -107,12 +133,12 @@ export default function AddIconBottomSheet({
         onBackdropPress={() => toggleModal()}
       >
         <View style={styles.bottomNavigationView}>
-        <Image
-          source={renderIcon(selectedIconString)}
-          resizeMode="contain"
-          style={{ width: 60, height: 60, marginBottom: 10 }}
-        />
-        <Text>{selectedIconString}</Text>
+          <Image
+            source={renderIcon(selectedIconString)}
+            resizeMode="contain"
+            style={{ width: 60, height: 60, marginBottom: 10 }}
+          />
+          <Text>{selectedIconString}</Text>
           <Text>So you want to add an icon buddy ? </Text>
           <TextInput
             onChangeText={(text) => onChangePlaceName(text)}
@@ -121,26 +147,26 @@ export default function AddIconBottomSheet({
           />
           <TextInput
             onChangeText={(text) => onChangeDescription(text)}
-            placeholder={'put a description to help adding precisions =)'}
+            placeholder={"put a description to help adding precisions =)"}
             value={description}
             style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
           />
           <Pressable
             style={[styles.button, styles.buttonOpen]}
             onPress={() => {
-            const newCoordinate={
-            placeName: placeName,
-            icon: selectedIconString,
-            latitude: iconEvent.coordinate.latitude,
-            longitude: iconEvent.coordinate.longitude,
-              description: description === "" ? 
-            '' : description,
-          };
-          setCoords([...coords, newCoordinate]);
-          postNewCoord(newCoordinate);
-          setVisible(false);
-          setModalVisible(false);}
-            } 
+              const newCoordinate = {
+                placeName: placeName,
+                icon: selectedIconString,
+                latitude: iconEvent.coordinate.latitude,
+                longitude: iconEvent.coordinate.longitude,
+                description: description === "" ? "" : description,
+                score: 0,
+              };
+              setCoords([...coords, newCoordinate]);
+              postNewCoord(newCoordinate);
+              setVisible(false);
+              setModalVisible(false);
+            }}
           >
             <Text style={styles.textStyle}>Send</Text>
           </Pressable>
@@ -153,12 +179,14 @@ export default function AddIconBottomSheet({
 const styles = StyleSheet.create({
   bottomNavigationView: {
     backgroundColor: "#fff",
-    width: "100%",
+    // width: "100%",
     height: 350,
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "column",
-    padding: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 10,
   },
   title: {
     flex: 1,
@@ -166,7 +194,7 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flex: 3,
     flexWrap: "wrap",
-    flexDirection: "column",
+    flexDirection: "row",
     // backgroundColor: 'blue',
     marginTop: 20,
     justifyContent: "center",
@@ -185,5 +213,9 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
+  },
+  header: {
+    fontWeight: "bold",
+    fontSize: 20,
   },
 });

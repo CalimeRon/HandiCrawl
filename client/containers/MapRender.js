@@ -1,17 +1,32 @@
 import React, { useState, useEffect } from "react";
 import MapView from "react-native-maps";
-import { StyleSheet, Text, View, Dimensions, Image, Pressable, Alert, Modal, TouchableHighlight } from "react-native";
-import { BottomSheet } from 'react-native-btr';
-import AddIconBottomSheet from '../components/AddIconBottomSheetComponent';
-import renderIcon from '../services/iconRendering';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  Image,
+  Pressable,
+  Alert,
+  Modal,
+  TouchableHighlight,
+} from "react-native";
+import { BottomSheet } from "react-native-btr";
+import AddIconBottomSheet from "../components/AddIconBottomSheetComponent";
+import {renderIcon} from "../services/iconFactory";
+import CalloutComponent from '../components/CalloutComponent'
 
-
-export default function MapRender({ region, setRegion, coords, setCoords, stillInBounds, maxZoom }) {
+export default function MapRender({
+  region,
+  setRegion,
+  coords,
+  setCoords,
+  stillInBounds,
+  maxZoom,
+}) {
   const [iconEvent, setIconEvent] = useState({});
   const [visible, setVisible] = useState(false);
   const [bottomSheetTriggered, setBottomSheetTriggered] = useState(false);
-
-
 
   //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
@@ -20,33 +35,54 @@ export default function MapRender({ region, setRegion, coords, setCoords, stillI
     else return 50;
   };
 
+  //creates the conditional width and height of icons by calling setDimension 
   let dimension = setDimension(region);
+
+  //populate region will render the actual icon for each coordinate loaded in the area
+  //by looping through the coords array
   let populateRegion;
-  if (coords.length !== 0 && coords !== undefined && region.latitudeDelta < maxZoom) {
-    // console.log('putain de coords', coords[0])
+  if (
+    coords.length !== 0 &&
+    coords !== undefined &&
+    region.latitudeDelta < maxZoom
+  ) {
     populateRegion = coords.map((coordItem) => {
+      
       return (
-        <MapView.Marker
-          style={{width: 50, height: 50}}
-          key={coordItem.latitude + coordItem.longitude} //TODO: change that
-          coordinate={coordItem}
-          title={
-            coordItem.placeName
-          }
-          description={coordItem.description}
-          anchor={{ x: 0.5, y: 0.5 }}
+        <View
+          key={coordItem.latitude + coordItem.longitude}
+          style={styles.markerContainer}
         >
-          <Image
-            style={{ resizeMode: "contain", width: dimension, height: dimension, flex: 1 }}
-            source={renderIcon(coordItem.icon)}
-          />
-        </MapView.Marker>
+          <MapView.Marker
+            style={styles.marker}
+            coordinate={coordItem}
+            title={coordItem.placeName}
+            description={coordItem.description}
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
+            <View >
+              <Image
+                style={{
+                  resizeMode: "contain",
+                  width: dimension,
+                  height: dimension,
+                  flex: 1,
+                  shadowColor: "#000",
+                }}
+                source={renderIcon(coordItem.icon)}
+              />
+            </View>
+            <MapView.Callout tooltip={true}>
+              {/*  */}
+              <CalloutComponent coordItem={coordItem} />
+            </MapView.Callout>
+          </MapView.Marker>
+        </View>
       );
-    })
+    });
   } else populateRegion = null;
   //populate the map by looping through each icon coordinate to render and creating a Marker component for each
 
-  
   return (
     <View style={styles.container}>
       <MapView
@@ -64,18 +100,24 @@ export default function MapRender({ region, setRegion, coords, setCoords, stillI
         showsMyLocationButton={true}
         rotateEnabled={false}
         onLongPress={(e) => {
-          setIconEvent(e.nativeEvent)
-          setVisible(true)
-          setBottomSheetTriggered(true)
+          setIconEvent(e.nativeEvent);
+          setVisible(true);
+          setBottomSheetTriggered(true);
         }}
       >
         {populateRegion}
       </MapView>
 
-      {bottomSheetTriggered ?
-        <AddIconBottomSheet iconEvent={iconEvent} visible={visible} setVisible={setVisible} setBottomSheetTriggered={setBottomSheetTriggered} setCoords={setCoords} coords={coords} />
-        : null}
-      
+      {bottomSheetTriggered ? (
+        <AddIconBottomSheet
+          iconEvent={iconEvent}
+          visible={visible}
+          setVisible={setVisible}
+          setBottomSheetTriggered={setBottomSheetTriggered}
+          setCoords={setCoords}
+          coords={coords}
+        />
+      ) : null}
     </View>
   );
 }
@@ -92,16 +134,21 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height,
   },
   bottomNavigationView: {
-    backgroundColor: '#fff',
-    width: '100%',
+    backgroundColor: "#fff",
+    width: "100%",
     height: 250,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  markerContainer: {
+    elevation: 20,
+  },
+  marker: {
+    // backgroundColor: 'blue'
   },
 });
 
-
-//imported style for regular markers of the map 
+//imported style for regular markers of the map
 const customStyle = [
   {
     elementType: "geometry",
