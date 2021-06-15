@@ -7,6 +7,8 @@ import {
   View,
   Image,
   useWindowDimensions,
+  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import MapRender from "./MapRender";
 import AppLoading from "expo-app-loading";
@@ -45,7 +47,6 @@ export default function App() {
   const [stillInBounds, setStillInBounds] = useState(true);
   const [rerenderFix, setRerenderFix] = useState(0);
   const maxZoom = 0.022;
-
 
   //load custom fonts for the app
   let [fontsLoaded] = useFonts({
@@ -109,7 +110,6 @@ export default function App() {
     updateMapElements();
   }, [region]);
 
-
   //first time loading, get the first area to populate based on user location
   useEffect(() => {
     firstLoad()
@@ -147,25 +147,25 @@ export default function App() {
     let loc;
     while (!success) {
       try {
-        loc = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});
+        loc = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
         success = true;
         setStoredBounds(getBounds(loc.coords));
       } catch (u_u) {
         console.log("retrying...", u_u);
       }
     }
-    
-    
+
     return loc;
   };
-
 
   // get the screen dimensions for splash screen
   const myDimensions = useWindowDimensions();
   const screenWidth = myDimensions.width;
   const screenHeight = myDimensions.height;
 
-// if we're still in the app initialization, keep the splash screen
+  // if we're still in the app initialization, keep the splash screen
   if (!asyncFirstLoad || !fontsLoaded) {
     console.log("not loaded");
     return (
@@ -183,19 +183,21 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={{ paddingTop: rerenderFix }}>
-        <MapRender
-          region={region}
-          coords={coords}
-          setRegion={setRegion}
-          setCoords={setCoords}
-          stillInBounds={stillInBounds}
-          maxZoom={maxZoom}
-        />
-      </View>
-      <StatusBar style="auto" />
-    </View>
+
+        <View style={styles.container}>
+          <View style={{ paddingTop: rerenderFix }}>
+            <MapRender
+              region={region}
+              coords={coords}
+              setRegion={setRegion}
+              setCoords={setCoords}
+              stillInBounds={stillInBounds}
+              maxZoom={maxZoom}
+            />
+          </View>
+          <StatusBar style="auto" />
+        </View>
+
   );
 }
 

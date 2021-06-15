@@ -8,6 +8,8 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
   TextInput,
+  KeyboardAvoidingView,
+  useWindowDimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { renderIcon, renderTitle } from "../services/iconFactory";
@@ -24,7 +26,9 @@ export default function EditModal({
 }) {
   if (!currentCallout) return null;
   const [temporaryHandiMarker, setTemporaryHandiMarker] = useState(null);
-
+  const myDimensions = useWindowDimensions();
+  const screenWidth = myDimensions.width;
+  const screenHeight = myDimensions.height;
   function clearEditModal() {
     setTemporaryHandiMarker(null);
   }
@@ -76,7 +80,7 @@ export default function EditModal({
           </Text>
           <View style={styles.editContainer}>
             <TextInput
-              style={[styles.iconText, styles.placeNameText]}
+              style={[styles.generalText, styles.iconText, styles.placeNameText]}
               onChangeText={(text) => {
                 console.log(text);
                 setTemporaryHandiMarker({
@@ -92,13 +96,13 @@ export default function EditModal({
                 : currentCallout.placeName}
             </TextInput>
           </View>
-          
+
           <Text style={[styles.generalText, styles.propertyText]}>
             Edit description...
           </Text>
           <View style={[styles.editContainer, styles.descriptionContainer]}>
             <TextInput
-              style={[styles.iconText, styles.placeNameText]}
+              style={[styles.generalText, styles.iconText, styles.placeNameText]}
               onChangeText={(text) => {
                 console.log(text);
                 setTemporaryHandiMarker({
@@ -114,6 +118,11 @@ export default function EditModal({
                 : currentCallout.description}
             </TextInput>
           </View>
+          <View style={styles.sendButton}>
+            <TouchableOpacity>
+              <Text style={[styles.generalText, styles.sendButtonUpdate]}>Send Update</Text>
+            </TouchableOpacity>
+         </View>
         </View>
       </BlurView>
     </Modal>
@@ -126,10 +135,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     // width: "100%",
     width: "90%",
-    height: 300,
+    height: 310,
     // height: "100%",
     position: "absolute",
-    bottom: "35%",
+    bottom: "30%",
     backgroundColor: "#EAF0F2",
     paddingTop: "0%",
     borderRadius: 20,
@@ -214,7 +223,7 @@ const styles = StyleSheet.create({
     // padding: "1%",
   },
   iconText: {
-    // marginLeft: 5,
+    paddingLeft: 5,
   },
   iconTitle: {
     alignSelf: "center",
@@ -263,7 +272,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: "80%",
     alignSelf: "flex-start",
-    height: '100%'
+    height: "100%",
   },
   propertyText: {
     paddingLeft: 15,
@@ -272,6 +281,19 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     fontSize: 30,
+  },
+  sendButton: {
+    backgroundColor: '#75B0AF',
+    alignSelf: 'center',
+    marginTop: 5,
+    // marginBottom: 5,
+    height: "15%",
+    borderRadius: 10,
+    justifyContent: 'center',
+    elevation: 3,
+  },
+  sendButtonUpdate: {
+    margin: 4,
   },
   titleText: {
     textAlign: "center",

@@ -12,6 +12,10 @@ import {
   Alert,
   Modal,
   TouchableHighlight,
+  KeyboardAvoidingView,
+  useWindowDimensions,
+  Platform,
+  ScrollView,
 } from "react-native";
 import { BottomSheet } from "react-native-btr";
 import AddIconBottomSheet from "../components/AddIconBottomSheetComponent";
@@ -33,6 +37,9 @@ export default function MapRender({
   const [currentCallout, setCurrentCallout] = useState(null);
   const [currentIconSelected, setCurrentIconSelected] = useState(null);
   const [editModalScreen, setEditModalScreen] = useState(false);
+  const myDimensions = useWindowDimensions();
+  const screenWidth = myDimensions.width;
+  const screenHeight = myDimensions.height;
 
   useEffect(() => {
     // console.log('in useEffect', currentIconSelected, currentCallout, coords)
@@ -53,7 +60,6 @@ export default function MapRender({
     if (region.latitudeDelta > 0.005) return 30;
     else return 50;
   };
-
 
   //creates the conditional width and height of icons by calling setDimension
   let dimension = setDimension(region);
@@ -106,70 +112,78 @@ export default function MapRender({
   } else populateRegion = null;
   //populate the map by looping through each icon coordinate to render and creating a Marker component for each
 
-  function toggleCalloutToEdit () {
-    setModalVisible(!modalVisible)
-    setEditModalScreen(!editModalScreen)
-}
+  function toggleCalloutToEdit() {
+    setModalVisible(!modalVisible);
+    setEditModalScreen(!editModalScreen);
+  }
 
   return (
-    <View style={styles.container}>
-      <MapView
-        onRegionChangeComplete={(region) => setRegion(region)}
-        style={styles.map}
-        initialRegion={{
-          latitude: region.latitude,
-          longitude: region.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }}
-        provider={MapView.PROVIDER_GOOGLE}
-        customMapStyle={customStyle}
-        showsUserLocation={true}
-        showsMyLocationButton={true}
-        rotateEnabled={false}
-        onLongPress={(e) => {
-          setIconEvent(e.nativeEvent);
-          setVisible(true);
-          setBottomSheetTriggered(true);
-        }}
-      >
-        {populateRegion}
-      </MapView>
-      {bottomSheetTriggered ? (
-        <AddIconBottomSheet
-          iconEvent={iconEvent}
-          visible={visible}
-          setVisible={setVisible}
-          setBottomSheetTriggered={setBottomSheetTriggered}
-          setCoords={setCoords}
-          coords={coords}
-        />
-      ) : null}
-      {currentCallout ? (
-        <View style={styles.modalContainer}>
-          <CalloutModal
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
-            currentCallout={currentCallout}
-            editModalScreen={editModalScreen}
-            setEditModalScreen={setEditModalScreen}
-            toggleCalloutToEdit={toggleCalloutToEdit}
-          />
+    // <KeyboardAvoidingView
+    //   behavior={Platform.OS == "ios" ? "padding" : "height"}
+    //   keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
+    //   enabled={Platform.OS === "ios" ? true : false}
+    // >
+
+        <View style={styles.container}>
+          <MapView
+            onRegionChangeComplete={(region) => setRegion(region)}
+            style={styles.map}
+            initialRegion={{
+              latitude: region.latitude,
+              longitude: region.longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            }}
+            provider={MapView.PROVIDER_GOOGLE}
+            customMapStyle={customStyle}
+            showsUserLocation={true}
+            showsMyLocationButton={true}
+            rotateEnabled={false}
+            onLongPress={(e) => {
+              setIconEvent(e.nativeEvent);
+              setVisible(true);
+              setBottomSheetTriggered(true);
+            }}
+          >
+            {populateRegion}
+          </MapView>
+          {bottomSheetTriggered ? (
+            <AddIconBottomSheet
+              iconEvent={iconEvent}
+              visible={visible}
+              setVisible={setVisible}
+              setBottomSheetTriggered={setBottomSheetTriggered}
+              setCoords={setCoords}
+              coords={coords}
+            />
+          ) : null}
+          {currentCallout ? (
+            <View style={styles.modalContainer}>
+              <CalloutModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                currentCallout={currentCallout}
+                editModalScreen={editModalScreen}
+                setEditModalScreen={setEditModalScreen}
+                toggleCalloutToEdit={toggleCalloutToEdit}
+              />
+            </View>
+          ) : null}
+          {editModalScreen ? (
+            <View style={styles.modalContainer}>
+              <EditModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                currentCallout={currentCallout}
+                editModalScreen={editModalScreen}
+                setEditModalScreen={setEditModalScreen}
+                toggleCalloutToEdit={toggleCalloutToEdit}
+              />
+            </View>
+          ) : null}
         </View>
-      ) : null}
-      {editModalScreen ? (
-        <View style={styles.modalContainer}>
-          <EditModal
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
-            currentCallout={currentCallout}
-            editModalScreen={editModalScreen}
-            setEditModalScreen={setEditModalScreen}
-            toggleCalloutToEdit={toggleCalloutToEdit}
-          />
-        </View>
-      ) : null}
-    </View>
+
+    // </KeyboardAvoidingView>
   );
 }
 
