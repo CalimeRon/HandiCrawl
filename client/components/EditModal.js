@@ -29,6 +29,8 @@ export default function EditModal({
   setTemporaryHandiMarker,
   toggleEditToIconSelection,
   setIconEditModalScreen,
+  coords,
+  setCoords,
 }) {
   if (!currentCallout) return null;
   const myDimensions = useWindowDimensions();
@@ -144,6 +146,13 @@ export default function EditModal({
               onPress={() => {
                 console.log("sending update maybe");
                 updateCoord(temporaryHandiMarker);
+                setCoords((prevCoords) => {
+                  const newCoords = prevCoords.map(coordItem => {
+                    if (coordItem.id === temporaryHandiMarker.id) return temporaryHandiMarker;
+                    else return coordItem;
+                  })
+                  return newCoords;
+                })
                 setTemporaryHandiMarker(null);
                 setModalVisible(false);
                 setEditModalScreen(false);

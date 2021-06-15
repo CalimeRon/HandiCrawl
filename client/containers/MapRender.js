@@ -39,10 +39,8 @@ export default function MapRender({
   const [currentCallout, setCurrentCallout] = useState(null);
   const [currentIconSelected, setCurrentIconSelected] = useState(null);
 
-
   const [editModalScreen, setEditModalScreen] = useState(false);
   const [iconEditModalScreen, setIconEditModalScreen] = useState(false);
-
 
   const myDimensions = useWindowDimensions();
   const [temporaryHandiMarker, setTemporaryHandiMarker] = useState(null);
@@ -198,7 +196,8 @@ export default function MapRender({
             setTemporaryHandiMarker={setTemporaryHandiMarker}
             toggleEditToIconSelection={toggleEditToIconSelection}
             setIconEditModalScreen={setIconEditModalScreen}
-
+            coords={coords}
+            setCoords={setCoords}
           />
         </View>
       ) : null}
