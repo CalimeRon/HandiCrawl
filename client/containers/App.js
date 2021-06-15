@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
+import * as SplashScreen from 'expo-splash-screen';
 import {
   Button,
   StyleSheet,
@@ -45,7 +46,9 @@ export default function App() {
   const [currentRegion, setCurrentRegion] = useState({});
   const [storedBounds, setStoredBounds] = useState({});
   const [stillInBounds, setStillInBounds] = useState(true);
-  const [rerenderFix, setRerenderFix] = useState(0);
+  const [rerenderFix, setRerenderFix] = useState(1);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const [appIsReady, setAppIsReady] = useState(false);
   const maxZoom = 0.022;
 
   //load custom fonts for the app
@@ -127,7 +130,7 @@ export default function App() {
 
   // attempt to fix the userLocationButton that doesn't load on first google maps rendering
   useEffect(() => {
-    let timer1 = setTimeout(() => setRerenderFix(1), 5000);
+    let timer1 = setTimeout(() => setRerenderFix(0), 5000);
     return () => {
       clearTimeout(timer1);
     };
@@ -166,7 +169,7 @@ export default function App() {
   const screenHeight = myDimensions.height;
 
   // if we're still in the app initialization, keep the splash screen
-  if (!asyncFirstLoad || !fontsLoaded) {
+  if (!asyncFirstLoad || !fontsLoaded ) {
     console.log("not loaded");
     return (
       <View
@@ -176,37 +179,51 @@ export default function App() {
       >
         <Image
           style={{ width: screenWidth, height: screenHeight }}
-          source={require("../assets/splousho.png")}
+          source={require("../assets/newSplash.png")}
         />
       </View>
     );
   }
+  console.log("screen height", screenHeight);
 
   return (
-
-        <View style={styles.container}>
-          <View style={{ paddingTop: rerenderFix }}>
-            <MapRender
-              region={region}
-              coords={coords}
-              setRegion={setRegion}
-              setCoords={setCoords}
-              stillInBounds={stillInBounds}
-              maxZoom={maxZoom}
-            />
-          </View>
-          <StatusBar style="auto" />
-        </View>
-
+    <View
+      style={[
+        styles.container,
+        {
+          // paddingTop: (20 / 100) * screenHeight,
+          // paddingLeft: (10 / 100) * screenWidth,
+          // paddingRight: (10/100) * screenWidth,
+        },
+      ]}
+    >
+      <View style={{ paddingTop: rerenderFix }}>
+        <MapRender
+          region={region}
+          coords={coords}
+          setRegion={setRegion}
+          setCoords={setCoords}
+          stillInBounds={stillInBounds}
+          maxZoom={maxZoom}
+          setMapLoaded={setMapLoaded}
+        />
+      </View>
+      <StatusBar style="auto" />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#A8EBF4",
+    // alignItems: "center",
+    // justifyContent: "center",
+    // position: "absolute",
+    // top: 50,
+
+    // height: '100%',
+    // width: '100%'
   },
   splash: {
     alignItems: "center",

@@ -60,7 +60,6 @@ export default function EditModal({
         style={[StyleSheet.absoluteFill, styles.nonBlurredContent]}
       >
         <View style={styles.bubble}>
-          
           <Text style={[styles.generalText, styles.titleText]}>
             Edit Handimarker
           </Text>
@@ -78,7 +77,11 @@ export default function EditModal({
                 style={styles.generalIcon}
               />
               <Text style={styles.iconText}>
-                {renderTitle(currentCallout.icon)}
+                {renderTitle(
+                  temporaryHandiMarker
+                    ? temporaryHandiMarker.icon
+                    : currentCallout.icon
+                )}
               </Text>
             </View>
             <TouchableOpacity onPress={() => setIconEditModalScreen(true)}>
@@ -120,7 +123,7 @@ export default function EditModal({
           </Text>
           <View style={[styles.editContainer, styles.descriptionContainer]}>
             <TextInput
-              multiline={false}
+              multiline={true}
               style={[
                 styles.generalText,
                 styles.iconText,
@@ -147,12 +150,13 @@ export default function EditModal({
                 console.log("sending update maybe");
                 updateCoord(temporaryHandiMarker);
                 setCoords((prevCoords) => {
-                  const newCoords = prevCoords.map(coordItem => {
-                    if (coordItem.id === temporaryHandiMarker.id) return temporaryHandiMarker;
+                  const newCoords = prevCoords.map((coordItem) => {
+                    if (coordItem.id === temporaryHandiMarker.id)
+                      return temporaryHandiMarker;
                     else return coordItem;
-                  })
+                  });
                   return newCoords;
-                })
+                });
                 setTemporaryHandiMarker(null);
                 setModalVisible(false);
                 setEditModalScreen(false);
@@ -315,6 +319,7 @@ const styles = StyleSheet.create({
     width: "80%",
     alignSelf: "flex-start",
     height: "100%",
+    padding: 1,
     // flexWrap: 'wrap',
     // flex : 1,
     // textAlignVertical: "top",

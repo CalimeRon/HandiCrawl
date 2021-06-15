@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
 } from "react-native";
-import React, {useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import { renderIcon, renderTitle } from "../services/iconFactory";
 import { BlurView } from "expo-blur";
 const iconDimension = 50;
@@ -23,9 +23,36 @@ export default function CalloutModal({
 }) {
   // if (!currentCallout) return null;
   // useEffect(() => {
-    
+
   // },[modalVisible])
   // console.log("in modal", currentCallout);
+  const [score, setScore] = useState(currentCallout.score);
+  const [up, setUp] = useState(false);
+  const [down, setDown] = useState(false);
+  const entranceScore = currentCallout.score
+  useEffect(() => {
+    if (up) setScore(entranceScore + 1);
+    if (down) setScore(entranceScore - 1);
+    if (!up && !down) setScore(entranceScore)
+  },[up, down])
+
+  function renderThumb(thumbString) {
+    switch (thumbString) {
+      case "up": {
+        setUp(!up);
+        if (down) setDown(false);
+        break;
+      }
+      case "down": {
+        setDown(!down);
+        if (up) setUp(false);
+        break;
+      }
+      default:
+        return;
+    }
+  }
+
   return (
     <Modal
       transparent={true}
@@ -34,64 +61,86 @@ export default function CalloutModal({
       animationType="slide"
       // style={{  margin: 0, alignItems: 'center', justifyContent: 'center' }}
     >
-      <BlurView intensity={150} style={[StyleSheet.absoluteFill, styles.nonBlurredContent]}>
-      <View style={styles.bubble}>
-        <View style={styles.iconImgContainer}>
-          <Image
-            source={renderIcon(currentCallout.icon)}
-            style={styles.generalIcon}
-          />
-        </View>
-        <View style={styles.thumbsContainer}>
-          <Image
-            source={require("../assets/thumbsup.png")}
-            style={[styles.generalIcon, styles.thumbsIcon]}
-            resizeMode="contain"
-          />
-          <Text style={[styles.generalText, styles.scoreText]}>
-            {currentCallout.score}
-          </Text>
-          <Image
-            source={require("../assets/thumbsdown.png")}
-            style={[styles.generalIcon, styles.thumbsIcon]}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={styles.iconTitle}>
-          <Text style={[styles.generalText, styles.iconTitleText]}>
-            {renderTitle(currentCallout.icon)}
-          </Text>
-        </View>
-        <View style={styles.editBubble}>
-          <Image
-            source={require("../assets/trash.png")}
-            style={[styles.trashIcon]}
-            resizeMode="contain"
-          />
-          <TouchableOpacity
-            onPress={() => {
-              toggleCalloutToEdit();
-            }}
-          >
+      <BlurView
+        intensity={150}
+        style={[StyleSheet.absoluteFill, styles.nonBlurredContent]}
+      >
+        <View style={styles.bubble}>
+          <View style={styles.iconImgContainer}>
             <Image
-              source={require("../assets/edit.png")}
-              style={[styles.trashIcon, styles.editIcon]}
-              resizeMode="contain"
+              source={renderIcon(currentCallout.icon)}
+              style={styles.generalIcon}
             />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.middleBubble}>
-          <View style={styles.locationContainer}>
-            <Text style={[styles.generalText, styles.placeNameText]}>
-              {currentCallout.placeName}
+          </View>
+          <View style={styles.thumbsContainer}>
+            <TouchableOpacity 
+              onPress={() => {
+                renderThumb('up');
+            }}>
+              <Image
+                source={
+                  up
+                    ? require("../assets/activeThumbsUp.png")
+                    : require("../assets/thumbsup.png")
+                }
+                style={[styles.thumbsIcon]}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <Text style={[styles.generalText, styles.scoreText]}>
+              {score}
             </Text>
-            <Text style={[styles.generalText, styles.descriptionText]}>
-              {currentCallout.description}
+            <TouchableOpacity 
+            onPress={() => {
+                renderThumb('down');
+            }}
+            >
+              <Image
+                source={
+                  down
+                    ? require("../assets/activeThumbsDown.png")
+                    : require("../assets/thumbsdown.png")
+                }
+                style={[styles.thumbsIcon]}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.iconTitle}>
+            <Text style={[styles.generalText, styles.iconTitleText]}>
+              {renderTitle(currentCallout.icon)}
             </Text>
           </View>
+          <View style={styles.editBubble}>
+            <Image
+              source={require("../assets/trash.png")}
+              style={[styles.trashIcon]}
+              resizeMode="contain"
+            />
+            <TouchableOpacity
+              onPress={() => {
+                toggleCalloutToEdit();
+              }}
+            >
+              <Image
+                source={require("../assets/edit.png")}
+                style={[styles.trashIcon, styles.editIcon]}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.middleBubble}>
+            <View style={styles.locationContainer}>
+              <Text style={[styles.generalText, styles.placeNameText]}>
+                {currentCallout.placeName}
+              </Text>
+              <Text style={[styles.generalText, styles.descriptionText]}>
+                {currentCallout.description}
+              </Text>
+            </View>
+          </View>
         </View>
-      </View>
       </BlurView>
     </Modal>
   );
@@ -103,7 +152,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     // width: "100%",
     width: "90%",
-    height: 220,
+    height: 200,
     // height: "100%",
     position: "absolute",
     bottom: "35%",
@@ -164,7 +213,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderColor: "#476C7D",
     zIndex: 1,
-    top: -120,
+    top: -115,
     // position: "relative",
     elevation: 15,
     justifyContent: "center",
@@ -182,6 +231,10 @@ const styles = StyleSheet.create({
   iconTitleText: {
     color: "#B7CCD3",
   },
+  // iconTouchable: {
+  //   width: iconDimension - 10,
+  //   height: iconDimension - 20,
+  // }, 
   locationContainer: {
     flexDirection: "column",
     // alignItems: "center",
@@ -199,7 +252,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "blue",
     padding: "1%",
     zIndex: 0,
-    top: 80,
+    top: 60,
     width: "100%",
     position: "absolute",
     borderTopColor: "#dcdddc",
@@ -218,22 +271,31 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     fontSize: 30,
+    textAlign: 'center',
+    width: 30,
+    // backgroundColor : 'yellow',
   },
   thumbsContainer: {
-    overflow: "hidden",
+    // overflow: "hidden",
     flexDirection: "row",
     zIndex: 1,
-    left: 10,
+    left: 5,
     top: 10,
-    flex: 1,
+    // flex: 1,
     position: "absolute",
     // elevation: 15,
     justifyContent: "space-between",
     alignItems: "center",
     width: "30%",
+    // backgroundColor: 'orange',
   },
   thumbsIcon: {
-    width: "30%",
+    // backgroundColor: "blue",
+    // width: "100%",
+    // width: 10,
+    // height: 10,
+    width: iconDimension - 10,
+    height: iconDimension - 10,
   },
   trashIcon: {
     width: iconDimension - 20,

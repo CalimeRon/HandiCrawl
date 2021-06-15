@@ -31,6 +31,7 @@ export default function MapRender({
   setCoords,
   stillInBounds,
   maxZoom,
+  setMapLoaded,
 }) {
   const [iconEvent, setIconEvent] = useState({});
   const [visible, setVisible] = useState(false);
@@ -146,15 +147,20 @@ export default function MapRender({
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
+        loadingEnabled={true}
         provider={MapView.PROVIDER_GOOGLE}
+        onMapReady={() => setMapLoaded(true)}
         customMapStyle={customStyle}
         showsUserLocation={true}
         showsMyLocationButton={true}
         rotateEnabled={false}
         onLongPress={(e) => {
-          setIconEvent(e.nativeEvent);
-          setVisible(true);
-          setBottomSheetTriggered(true);
+          if (region.latitudeDelta > maxZoom) return;
+          else {
+            setIconEvent(e.nativeEvent);
+            setVisible(true);
+            setBottomSheetTriggered(true);
+          }
         }}
       >
         {populateRegion}
@@ -225,24 +231,36 @@ export default function MapRender({
   );
 }
 
+const myScreen = {
+  width: Dimensions.get("window").width,
+  height: Dimensions.get("window").height,
+  widthRatio: 0.85,
+  heightRatio: 0.8,
+};
+// const screenRatio = [0.85,0.9]
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 22,
+    // flex: 1,
+    backgroundColor: "blue",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
+    // marginTop: '10%',
+    // paddingTop: 100,
+    width: myScreen.width * myScreen.widthRatio,
+    height: myScreen.height * myScreen.heightRatio,
+    // width: '100%',
+    // height: '100%',
+    position: 'absolute',
+    // left: '7%',
+    zIndex: 1,
+    elevation: 20,
+    top: myScreen.height * 0.15,
+    left: myScreen.width * 0.075,
   },
   map: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
-  },
-  bottomNavigationView: {
-    backgroundColor: "#fff",
-    width: "100%",
-    height: 250,
-    justifyContent: "center",
-    alignItems: "center",
+    width: myScreen.width * myScreen.widthRatio,
+    height: myScreen.height * myScreen.heightRatio,
   },
   markerContainer: {
     elevation: 20,

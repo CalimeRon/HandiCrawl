@@ -67,11 +67,11 @@ export async function getCoords(region) {
 
 export async function postNewCoord(coord) {
   // console.log("in async posting", coord)
-  const res = await dbh.collection("coordinates").add(coord);
-  console.log("after posting I get this", res);
+  // const res = await dbh.collection("coordinates").add(coord);
+  console.log("SEEEENT");
   // console.log('Added document with ID:', res.id);
 }
 
 export async function updateCoord (coord) {
-  const res = await dbh.collection("coordinates").doc(coord.id).set(coord)
+  // const res = await dbh.collection("coordinates").doc(coord.id).set(coord)
 }
