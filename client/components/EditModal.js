@@ -13,6 +13,8 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { renderIcon, renderTitle } from "../services/iconFactory";
+import { updateCoord } from "../services/apiServices";
+
 import { BlurView } from "expo-blur";
 const iconDimension = 50;
 
@@ -37,9 +39,7 @@ export default function EditModal({
   }
 
   useEffect(() => {
-    !temporaryHandiMarker?
-      setTemporaryHandiMarker(currentCallout)
-    : null;
+    !temporaryHandiMarker ? setTemporaryHandiMarker(currentCallout) : null;
   }, []);
 
   console.log("temp handi marker", temporaryHandiMarker);
@@ -58,6 +58,7 @@ export default function EditModal({
         style={[StyleSheet.absoluteFill, styles.nonBlurredContent]}
       >
         <View style={styles.bubble}>
+          
           <Text style={[styles.generalText, styles.titleText]}>
             Edit Handimarker
           </Text>
@@ -67,22 +68,23 @@ export default function EditModal({
           <View style={styles.editContainer}>
             <View style={styles.iconImgContainer}>
               <Image
-                source={temporaryHandiMarker ? renderIcon(temporaryHandiMarker.icon) :
-                renderIcon(currentCallout.icon)}
+                source={
+                  temporaryHandiMarker
+                    ? renderIcon(temporaryHandiMarker.icon)
+                    : renderIcon(currentCallout.icon)
+                }
                 style={styles.generalIcon}
               />
               <Text style={styles.iconText}>
                 {renderTitle(currentCallout.icon)}
               </Text>
             </View>
-            <TouchableOpacity
-            onPress={()=> setIconEditModalScreen(true)}
-            >
-            <Image
-              source={require("../assets/edit.png")}
-              style={[styles.trashIcon, styles.editIcon]}
-              resizeMode="contain"
-            />
+            <TouchableOpacity onPress={() => setIconEditModalScreen(true)}>
+              <Image
+                source={require("../assets/edit.png")}
+                style={[styles.trashIcon, styles.editIcon]}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
           </View>
           <Text style={[styles.generalText, styles.propertyText]}>
@@ -116,7 +118,7 @@ export default function EditModal({
           </Text>
           <View style={[styles.editContainer, styles.descriptionContainer]}>
             <TextInput
-              multiline={true}
+              multiline={false}
               style={[
                 styles.generalText,
                 styles.iconText,
@@ -138,7 +140,15 @@ export default function EditModal({
             </TextInput>
           </View>
           <View style={styles.sendButton}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                console.log("sending update maybe");
+                updateCoord(temporaryHandiMarker);
+                setTemporaryHandiMarker(null);
+                setModalVisible(false);
+                setEditModalScreen(false);
+              }}
+            >
               <Text style={[styles.generalText, styles.sendButtonUpdate]}>
                 Send Update
               </Text>
@@ -182,10 +192,12 @@ const styles = StyleSheet.create({
     height: 60,
   },
   descriptionText: {
-    fontSize: 20,
-    fontFamily: "K2D_400Regular_Italic",
-
-    textAlign: "center",
+    backgroundColor: "#EAF0F2",
+    borderRadius: 10,
+    width: "80%",
+    alignSelf: "flex-start",
+    height: "100%",
+    textAlignVertical: "top",
   },
   editBubble: {
     flexDirection: "row",
@@ -294,7 +306,9 @@ const styles = StyleSheet.create({
     width: "80%",
     alignSelf: "flex-start",
     height: "100%",
-    textAlignVertical: "top",
+    // flexWrap: 'wrap',
+    // flex : 1,
+    // textAlignVertical: "top",
   },
   propertyText: {
     paddingLeft: 15,
@@ -326,6 +340,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#dcdddc",
     marginBottom: 1,
+
     // backgroundColor: 'yellow'
   },
   thumbsContainer: {
