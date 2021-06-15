@@ -55,10 +55,7 @@ export default function EditModal({
       animationType="slide"
       // style={{  margin: 0, alignItems: 'center', justifyContent: 'center' }}
     >
-      <BlurView
-        intensity={150}
-        style={[StyleSheet.absoluteFill, styles.nonBlurredContent]}
-      >
+
         <View style={styles.bubble}>
           <Text style={[styles.generalText, styles.titleText]}>
             Edit Handimarker
@@ -168,7 +165,6 @@ export default function EditModal({
             </TouchableOpacity>
           </View>
         </View>
-      </BlurView>
     </Modal>
   );
 }

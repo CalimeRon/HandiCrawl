@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState, useCallback } from "react";
-import * as SplashScreen from 'expo-splash-screen';
+import * as SplashScreen from "expo-splash-screen";
+// import Constants from 'expo-constants'
 import {
   Button,
   StyleSheet,
@@ -10,6 +11,7 @@ import {
   useWindowDimensions,
   KeyboardAvoidingView,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import MapRender from "./MapRender";
 import AppLoading from "expo-app-loading";
@@ -115,13 +117,12 @@ export default function App() {
 
   //first time loading, get the first area to populate based on user location
   useEffect(() => {
-    async function prepare () {
+    async function prepare() {
       try {
         const result = await firstLoad();
         const theCoords = await getCoords(result);
         setCoords(theCoords);
         setRegion(result.coords);
-        
       } catch (u_u) {
         console.warn(u_u);
       } finally {
@@ -147,8 +148,7 @@ export default function App() {
     if (appIsReady) {
       await SplashScreen.hideAsync();
     }
-  }, [appIsReady])
-
+  }, [appIsReady]);
 
   // attempt to fix the userLocationButton that doesn't load on first google maps rendering
   useEffect(() => {
@@ -189,6 +189,7 @@ export default function App() {
   const myDimensions = useWindowDimensions();
   const screenWidth = myDimensions.width;
   const screenHeight = myDimensions.height;
+  console.log(StatusBar.currentHeight);
 
   // if we're still in the app initialization, keep the splash screen
   // if (!asyncFirstLoad || !fontsLoaded ) {
@@ -209,49 +210,87 @@ export default function App() {
   console.log("screen height", screenHeight);
   if (!appIsReady) return null;
   return (
-    <View
-      onLayout={onLayoutRootView}
-      style={[
-        styles.container,
-        {
-          // paddingTop: (20 / 100) * screenHeight,
-          // paddingLeft: (10 / 100) * screenWidth,
-          // paddingRight: (10/100) * screenWidth,
-        },
-      ]}
-    >
-      <View style={{ paddingTop: rerenderFix }}>
-        <MapRender
-          region={region}
-          coords={coords}
-          setRegion={setRegion}
-          setCoords={setCoords}
-          stillInBounds={stillInBounds}
-          maxZoom={maxZoom}
-          setMapLoaded={setMapLoaded}
-        />
+    <View onLayout={onLayoutRootView}>
+      <View style={styles.container}>
+        <View style={[{ paddingTop: rerenderFix }, styles.metaContainer]}>
+          <View style={styles.topMainView}>
+            <Text style={[styles.generalText, styles.topMainViewText]}>
+              Click on a marker to get and edit information
+            </Text>
+            <Text style={[styles.generalText, styles.topMainViewText]}>
+              Press on a location to add a marker
+            </Text>
+          </View>
+          <MapRender
+            region={region}
+            coords={coords}
+            setRegion={setRegion}
+            setCoords={setCoords}
+            stillInBounds={stillInBounds}
+            maxZoom={maxZoom}
+            setMapLoaded={setMapLoaded}
+          />
+          <View style={styles.bottomMainView}>
+            <Text>Hella</Text>
+          </View>
+        </View>
       </View>
-      <StatusBar style="auto" />
+      <StatusBar style="light" hidden={true} />
     </View>
   );
 }
 
+const myScreen = {
+  width: Dimensions.get("window").width,
+  height: Dimensions.get("window").height,
+  widthRatio: 1,
+  heightRatio: 1,
+};
+
 const styles = StyleSheet.create({
+  bottomMainView: {
+    backgroundColor: "#EAF0F2",
+    width: "100%",
+    height: myScreen.height * 0.1,
+  },
   container: {
     // flex: 1,
-    backgroundColor: "#EAF0F2",
-    // alignItems: "center",
-    // justifyContent: "center",
+    backgroundColor: "#1C333E",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    flexDirection: "column",
     // position: "absolute",
     // top: 50,
 
-    // height: '100%',
-    // width: '100%'
+    width: myScreen.width * myScreen.widthRatio,
+    height: myScreen.height * myScreen.heightRatio,
+  },
+  container2: {},
+  metaContainer: {
+    backgroundColor: "#EAF0F2",
+    borderTopLeftRadius: 70,
+    borderTopRightRadius: 70,
+  },
+  generalText: {
+    fontFamily: "K2D_600SemiBold",
+    color: "#1C333E",
   },
   splash: {
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#A8EBF4",
     resizeMode: "cover",
+  },
+  topMainView: {
+    // backgroundColor: "yellow",
+    width: "100%",
+    position: "absolute",
+    top: "1%",
+    zIndex: 1,
+  },
+  topMainViewText: {
+    textAlign: "center",
+    fontSize: 15,
+    color: "#9FBBC5",
   },
 });

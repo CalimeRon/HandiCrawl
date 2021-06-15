@@ -61,10 +61,7 @@ export default function CalloutModal({
       animationType="slide"
       // style={{  margin: 0, alignItems: 'center', justifyContent: 'center' }}
     >
-      <BlurView
-        intensity={150}
-        style={[StyleSheet.absoluteFill, styles.nonBlurredContent]}
-      >
+
         <View style={styles.bubble}>
           <View style={styles.iconImgContainer}>
             <Image
@@ -141,7 +138,7 @@ export default function CalloutModal({
             </View>
           </View>
         </View>
-      </BlurView>
+
     </Modal>
   );
 }

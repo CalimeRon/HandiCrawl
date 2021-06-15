@@ -51,6 +51,7 @@ export default function MapRender({
 
   useEffect(() => {
     // console.log('in useEffect', currentIconSelected, currentCallout, coords)
+    setDimension(region);
     if (!currentIconSelected) return;
     const iconSelected = coords.filter((coord) => {
       return (
@@ -60,12 +61,12 @@ export default function MapRender({
     });
     setCurrentCallout(iconSelected[0]);
     // console.log("current callout",currentCallout)
-  }, [currentIconSelected]);
+  }, [currentIconSelected, region.latitudeDelta]);
 
   //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
     if (!region) return;
-    if (region.latitudeDelta > 0.005) return 30;
+    if (region.latitudeDelta > 0.004) return 30;
     else return 50;
   };
 
@@ -97,13 +98,20 @@ export default function MapRender({
               setCurrentIconSelected(e.nativeEvent.coordinate);
             }}
           >
-            <View>
+            <View
+              style={{
+                width: 50,
+                height: 50,
+                backgroundColor: "yelloww",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <Image
+                resizeMode="contain"
                 style={{
-                  resizeMode: "contain",
                   width: dimension,
                   height: dimension,
-                  flex: 1,
                   shadowColor: "#000",
                 }}
                 source={renderIcon(coordItem.icon)}
@@ -235,23 +243,29 @@ const myScreen = {
   width: Dimensions.get("window").width,
   height: Dimensions.get("window").height,
   widthRatio: 1,
-  heightRatio: 0.8,
+  heightRatio: 0.65,
 };
 // const screenRatio = [0.85,0.9]
 
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
-    backgroundColor: "blue",
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
-    borderRadius: 20,
-    borderWidth: 20,
+    // backgroundColor: "blue",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 70,
+    // borderTopLeftRadius: 50,
+    // borderWidth: 40,
+    // marginTop: 70,
+    // borderTopWidth: 60,
+    borderLeftWidth: 15,
+    borderRightWidth: 15,
+    borderColor: "#EAF0F2",
     overflow: "hidden",
-    // marginTop: '10%',
-    // paddingTop: 100,
-    width: "100%",
-    height: "100%",
+    marginTop: 70,
+    // paddingTop: 20,
+    width: myScreen.width * myScreen.widthRatio,
+    height: myScreen.height * myScreen.heightRatio,
     // width: '100%',
     // height: '100%',
     // position: 'absolute',
@@ -262,9 +276,10 @@ const styles = StyleSheet.create({
     // left: myScreen.width * 0,
   },
   map: {
-    width: myScreen.width * myScreen.widthRatio,
-    height: myScreen.height * myScreen.heightRatio,
+    width: "100%",
+    height: "120%",
     overflow: "hidden",
+    bottom: -25,
   },
   markerContainer: {
     elevation: 20,

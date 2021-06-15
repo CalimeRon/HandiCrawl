@@ -38,7 +38,7 @@ export default function IconModal({
               };
             });
             setIconEditModalScreen(false);
-            console.log("modified, ", temporaryHandiMarker)
+            console.log("modified, ", temporaryHandiMarker);
           }}
         >
           <View style={styles.markerImgWrapper}>
@@ -61,17 +61,12 @@ export default function IconModal({
       onRequestClose={() => toggleEditToIconSelection()}
       animationType="slide"
     >
-      <BlurView
-        intensity={150}
-        style={[StyleSheet.absoluteFill, styles.nonBlurredContent]}
-      >
-        <View style={styles.bubble}>
-          <Text style={[styles.generalText, styles.titleText]}>
-            Choose your icon
-          </Text>
-          <View style={styles.iconButtons}>{iconButton}</View>
-        </View>
-      </BlurView>
+      <View style={styles.bubble}>
+        <Text style={[styles.generalText, styles.titleText]}>
+          Choose your icon
+        </Text>
+        <View style={styles.iconButtons}>{iconButton}</View>
+      </View>
     </Modal>
   );
 }
