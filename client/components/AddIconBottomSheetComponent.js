@@ -313,8 +313,8 @@ const styles = StyleSheet.create({
   },
   closeIconContainer: {
     position: "absolute",
-    right: 5,
-    top: 5,
+    right: '5%',
+    top: '5%',
   },
   closeIconImg: {
     width: 20,

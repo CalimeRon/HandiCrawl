@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import * as SplashScreen from 'expo-splash-screen';
 import {
   Button,
@@ -115,18 +115,40 @@ export default function App() {
 
   //first time loading, get the first area to populate based on user location
   useEffect(() => {
-    firstLoad()
-      .then((result) => {
-        // console.log("first then", result);
-        const theCoords = getCoords(result.coords);
-        return { result: result, coords: theCoords };
-      })
-      .then(({ result, coords }) => {
-        // console.log("in second theb", result, coords);
-        setCoords(coords);
+    async function prepare () {
+      try {
+        const result = await firstLoad();
+        const theCoords = await getCoords(result);
+        setCoords(theCoords);
         setRegion(result.coords);
-      });
+        
+      } catch (u_u) {
+        console.warn(u_u);
+      } finally {
+        setAppIsReady(true);
+      }
+    }
+
+    prepare();
+    // firstLoad()
+    //   .then((result) => {
+    //     // console.log("first then", result);
+    //     const theCoords = getCoords(result.coords);
+    //     return { result: result, coords: theCoords };
+    //   })
+    //   .then(({ result, coords }) => {
+    //     // console.log("in second theb", result, coords);
+    //     setCoords(coords);
+    //     setRegion(result.coords);
+    //   });
   }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady])
+
 
   // attempt to fix the userLocationButton that doesn't load on first google maps rendering
   useEffect(() => {
@@ -169,25 +191,26 @@ export default function App() {
   const screenHeight = myDimensions.height;
 
   // if we're still in the app initialization, keep the splash screen
-  if (!asyncFirstLoad || !fontsLoaded ) {
-    console.log("not loaded");
-    return (
-      <View
-        style={{
-          ...styles.splash,
-        }}
-      >
-        <Image
-          style={{ width: screenWidth, height: screenHeight }}
-          source={require("../assets/newSplash.png")}
-        />
-      </View>
-    );
-  }
+  // if (!asyncFirstLoad || !fontsLoaded ) {
+  //   console.log("not loaded");
+  //   return (
+  //     <View
+  //       style={{
+  //         ...styles.splash,
+  //       }}
+  //     >
+  //       <Image
+  //         style={{ width: screenWidth, height: screenHeight }}
+  //         source={require("../assets/newSplash.png")}
+  //       />
+  //     </View>
+  //   );
+  // }
   console.log("screen height", screenHeight);
-
+  if (!appIsReady) return null;
   return (
     <View
+      onLayout={onLayoutRootView}
       style={[
         styles.container,
         {
@@ -215,8 +238,8 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#A8EBF4",
+    // flex: 1,
+    backgroundColor: "#EAF0F2",
     // alignItems: "center",
     // justifyContent: "center",
     // position: "absolute",
