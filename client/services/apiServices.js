@@ -45,7 +45,7 @@ export async function getCoords(region) {
   // I keep this below to test without wasting requests to Firestore (since there's a quota)
   return [
     {
-      _id: "60c3234d36ac69e8941637b0",
+      id: "60c3234d36ac69e8941637b0",
       placeName: "Dans ton gros cul pourri",
       icon: "ramp",
       latitude: 44.43750100149944,
@@ -54,7 +54,7 @@ export async function getCoords(region) {
       score: 0,
     },
     {
-      _id: "60c3234d226e1bda5b481c83",
+      id: "60c3234d226e1bda5b481c83",
       placeName: "Ion Campineanu 29 bloc 6 Sc.1",
       icon: "warning",
       latitude: 44.438269898955824,
@@ -70,4 +70,8 @@ export async function postNewCoord(coord) {
   const res = await dbh.collection("coordinates").add(coord);
   console.log("after posting I get this", res);
   // console.log('Added document with ID:', res.id);
+}
+
+export async function updateCoord (coord) {
+  const res = await db.collection("coordinates").doc(coord.id).set(coord)
 }

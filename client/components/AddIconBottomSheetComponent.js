@@ -9,11 +9,13 @@ import {
   Image,
   Pressable,
   TextInput,
+  useWindowDimensions,
 } from "react-native";
 import * as Location from "expo-location";
-import { renderIcon, renderTitle } from "../services/iconFactory";
+import { renderIcon, renderTitle, allIcons } from "../services/iconFactory";
 import { postNewCoord } from "../services/apiServices";
 // import DescriptionModal from "./DescriptionModal";
+// import allIcons from '../services/iconFactory';
 
 export default function AddIconBottomSheet({
   iconEvent,
@@ -22,17 +24,22 @@ export default function AddIconBottomSheet({
   setCoords,
   coords,
 }) {
-  const [allIcons, setAllIcons] = useState([
-    "warning",
-    "easyAccess",
-    "elevator",
-    "ramp",
-    "stairs",
-  ]);
+  // const [allIcons, setAllIcons] = useState([
+  //   "warning",
+  //   "easyAccess",
+  //   "elevator",
+  //   "ramp",
+  //   "stairs",
+  // ]);
   const [modalVisible, setModalVisible] = useState(false);
   const [placeName, onChangePlaceName] = useState("location name");
   const [description, onChangeDescription] = useState("");
   const [selectedIconString, setSelectedIconString] = useState("");
+  const currentWidth = useWindowDimensions().width;
+  const paddingPercent = 5;
+  const effectivePadding = Math.floor((paddingPercent * currentWidth) / 100);
+  // console.log("width", currentWidth, effectivePadding)
+
   function hasNumber(string) {
     return /\d/.test(string);
   }
@@ -41,38 +48,25 @@ export default function AddIconBottomSheet({
   //details before sending the post request to the db
   const iconButton = allIcons.map((iconString) => {
     return (
-      <TouchableOpacity
-        key={iconString}
-        style={{
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 4,
-          borderStyle: "solid",
-          borderColor: "blue",
-          borderWidth: 1,
-          marginRight: 4,
-          marginBottom: 4,
-        }}
-        onPress={() => {
-          setSelectedIconString(iconString);
-          toggleModal();
-        }}
-      >
-        <Image
-          source={renderIcon(iconString)}
-          resizeMode="contain"
-          style={{
-            width: 60,
-            height: 60,
-            marginBottom: 10,
-            backgroundColor: "orange",
+      <View style={styles.iconImgContainer} key={iconString}>
+        <TouchableOpacity
+          key={iconString}
+          style={styles.handiMarkerContainer}
+          onPress={() => {
+            setSelectedIconString(iconString);
+            toggleModal();
           }}
-        />
-        <Text style={{ backgroundColor: "blue" }}>
-          {renderTitle(iconString)}...
-        </Text>
-      </TouchableOpacity>
+        >
+          <View style={styles.markerImgWrapper}>
+            <Image
+              source={renderIcon(iconString)}
+              resizeMode="contain"
+              style={styles.iconImg}
+            />
+          </View>
+          <Text style={styles.generalText}>{renderTitle(iconString)}...</Text>
+        </TouchableOpacity>
+      </View>
     );
   });
 
@@ -115,11 +109,48 @@ export default function AddIconBottomSheet({
         visible={visible}
         onBackButtonPress={() => setVisible(false)}
         onBackdropPress={() => setVisible(false)}
+        style={{
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 4,
+          },
+          shadowOpacity: 0.32,
+          shadowRadius: 5.46,
+
+          elevation: 9,
+        }}
       >
         <View style={styles.bottomNavigationView}>
-          <Text style={styles.header}>Click on the icon you want to add </Text>
-          <View style={styles.buttonsContainer}>{iconButton}</View>
-          <Button title="cancel" onPress={() => setVisible(false)}></Button>
+          <Text style={[styles.generalText, styles.header]}>
+            Add a HandiMarker
+          </Text>
+          <View style={styles.closeIconContainer}>
+            <TouchableOpacity
+              // style={styles.handiMarkerContainer}
+              onPress={() => {
+                setVisible(false);
+              }}
+            >
+              <Image
+                source={require("../assets/closeIcon.png")}
+                resizeMode="contain"
+                style={styles.closeIconImg}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View
+            style={[
+              styles.buttonsContainer,
+              {
+                paddingLeft: effectivePadding,
+                paddingRight: effectivePadding,
+              },
+            ]}
+          >
+            {iconButton}
+          </View>
         </View>
       </BottomSheet>
       {/* {modalVisible ? <DescriptionModal
@@ -132,27 +163,53 @@ export default function AddIconBottomSheet({
         onBackButtonPress={() => toggleModal()}
         onBackdropPress={() => toggleModal()}
       >
-        <View style={styles.bottomNavigationView}>
-          <Image
-            source={renderIcon(selectedIconString)}
-            resizeMode="contain"
-            style={{ width: 60, height: 60, marginBottom: 10 }}
-          />
-          <Text>{selectedIconString}</Text>
-          <Text>So you want to add an icon buddy ? </Text>
-          <TextInput
-            onChangeText={(text) => onChangePlaceName(text)}
-            value={placeName}
-            style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
-          />
-          <TextInput
-            onChangeText={(text) => onChangeDescription(text)}
-            placeholder={"put a description to help adding precisions =)"}
-            value={description}
-            style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
-          />
-          <Pressable
-            style={[styles.button, styles.buttonOpen]}
+        <View style={styles.bottomAddIconView}>
+          <View style={styles.addIconImgContainer}>
+            <Image
+              source={renderIcon(selectedIconString)}
+              resizeMode="contain"
+              style={styles.addIconImg}
+            />
+          </View>
+          <Text style={[styles.generalText, styles.iconTitleText]}>
+            {renderTitle(selectedIconString)}
+          </Text>
+          <View style={styles.locationContainer}>
+            <Text style={[styles.generalText, styles.propertyText]}>
+              Address detected. Feel free to modify it =)
+            </Text>
+            <View style={styles.editContainer}>
+              <TextInput
+                onChangeText={(text) => onChangePlaceName(text)}
+                value={placeName}
+                style={[
+                  styles.generalText,
+                  styles.iconText,
+                  styles.placeNameText,
+                ]}
+              />
+            </View>
+          </View>
+          <View style={styles.locationContainer}>
+            <Text style={[styles.generalText, styles.propertyText]}>
+              Provide some details to help even more =)
+            </Text>
+            <View style={[styles.editContainer, styles.descriptionContainer]}>
+              <TextInput
+                multiline={true}
+                onChangeText={(text) => onChangeDescription(text)}
+                value={description}
+                style={[
+                  styles.generalText,
+                  styles.iconText,
+                  styles.descriptionText,
+                ]}
+              />
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={[styles.button]}
             onPress={() => {
               const newCoordinate = {
                 placeName: placeName,
@@ -168,8 +225,8 @@ export default function AddIconBottomSheet({
               setModalVisible(false);
             }}
           >
-            <Text style={styles.textStyle}>Send</Text>
-          </Pressable>
+            <Text style={[styles.generalText, styles.textStyle]}>Send</Text>
+          </TouchableOpacity>
         </View>
       </BottomSheet>
     </View>
@@ -177,45 +234,202 @@ export default function AddIconBottomSheet({
 }
 
 const styles = StyleSheet.create({
-  bottomNavigationView: {
-    backgroundColor: "#fff",
+  addIconImg: {
+    width: 60,
+    height: 60,
+    // marginBottom: 10,
+    // position: "absolute",
+    // top: -30,
+  },
+  addIconImgContainer: {
+    borderWidth: 5,
+    borderRadius: 40,
+    overflow: "hidden",
+    borderColor: "#476C7D",
+    zIndex: 1,
+    top: -40,
+    position: "absolute",
+    elevation: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "orange",
+    // padding: "1%",
+  },
+  bottomAddIconView: {
+    backgroundColor: "#EAF0F2",
     // width: "100%",
-    height: 350,
-    justifyContent: "space-between",
+    height: 320,
+    // justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: 10,
+    // paddingLeft: 50,
+    // paddingRight: 50,
+    paddingTop: 30,
+    paddingBottom: 10,
+    // marginRight: 10,
+    // marginLeft: 10,
+    position: "absolute",
+    zIndex: 0,
+    width: "100%",
   },
-  title: {
-    flex: 1,
+  bottomNavigationView: {
+    backgroundColor: "#EAF0F2",
+    // width: "100%",
+    height: 320,
+    // justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+    // paddingLeft: 50,
+    // paddingRight: 50,
+    paddingTop: 10,
+    paddingBottom: 10,
+    // marginRight: 10,
+    // marginLeft: 10,
+    position: "relative",
+    zIndex: 0,
+  },
+  button: {
+    // borderRadius: 20,
+    backgroundColor: "#75B0AF",
+    alignSelf: "center",
+    marginTop: 15,
+    // marginBottom: 5,
+    height: "15%",
+    borderRadius: 10,
+    justifyContent: "center",
+    elevation: 3,
+    width: "20%",
   },
   buttonsContainer: {
     flex: 3,
     flexWrap: "wrap",
     flexDirection: "row",
-    // backgroundColor: 'blue',
+    // backgroundColor: "blue",
     marginTop: 20,
+
     justifyContent: "center",
-    // alignItems: 'center',
+    alignItems: "center",
     width: 400,
   },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+  closeIconContainer: {
+    position: "absolute",
+    right: 5,
+    top: 5,
   },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
+  closeIconImg: {
+    width: 20,
+    height: 20,
+  },
+  descriptionContainer: {
+    height: 60,
+  },
+  descriptionText: {
+    backgroundColor: "#EAF0F2",
+    // backgroundColor: "blue",
+    borderRadius: 10,
+    width: "80%",
+    // alignSelf: "flex-start",
+    height: "95%",
+    textAlignVertical: "top",
+    padding: 2,
+  },
+  editContainer: {
+    backgroundColor: "#CFE3E3",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+    // borderWidth: 2,
+    // borderColor: "#476C7D",
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 0,
+    padding: 1,
+    justifyContent: "space-between",
+    elevation: 5,
+  },
+  generalText: {
+    fontFamily: "K2D_600SemiBold",
+    color: "#1C333E",
+  },
+  handiMarkerContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 4,
+    borderStyle: "solid",
+    // borderColor: "blue",
+    // borderWidth: 1,
+    marginRight: 4,
+    marginBottom: 4,
+    width: 100,
+    position: 'relative',
+    zIndex: 0
+  },
+  header: {
+    // fontWeight: "bold",
+    fontSize: 20,
+    // backgroundColor: "yellow",
+    width: "100%",
+    textAlign: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#dcdddc",
+    marginBottom: 1,
+  },
+  iconImg: {
+    width: 60,
+    height: 60,
+    marginBottom: 3,
+    // backgroundColor: "orange",
+  },
+  iconImgContainer: {
+    elevation: 10,
+    zIndex: 1,
+    position: "relative",
+  },
+  iconText: {
+    paddingLeft: 5,
+  },
+  iconTitleText: {
+    color: "#B7CCD3",
+    // backgroundColor: 'yellow'
+    width: "100%",
+    textAlign: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#dcdddc",
+    marginBottom: 1,
+  },
+  locationContainer: {
+    // backgroundColor: 'blue',
+
+    width: "100%",
+  },
+  markerImgWrapper: {
+    // position: 'absolute',
+    zIndex: 1,
+    elevation: 10
+  },
+  placeNameText: {
+    backgroundColor: "#EAF0F2",
+    // backgroundColor: "blue",
+    borderRadius: 10,
+    width: "80%",
+    // alignSelf: "flex-start",
+    height: 35,
+  },
+  propertyText: {
+    paddingLeft: 15,
+    fontFamily: "K2D_300Light_Italic",
+    fontSize: 10,
+    marginBottom: 2,
+    marginTop: 10,
   },
   textStyle: {
     color: "white",
-    fontWeight: "bold",
+    // fontWeight: "bold",
     textAlign: "center",
+    color: "#DEE7EA",
   },
-  header: {
-    fontWeight: "bold",
-    fontSize: 20,
+  title: {
+    flex: 1,
   },
 });

@@ -1,3 +1,10 @@
+export const allIcons = [
+  "warning",
+  "easyAccess",
+  "elevator",
+  "ramp",
+  "stairs",
+]
 
   // Access the icon png depending on the iconId parameter inside the location object
 export function renderIcon (iconId) {
@@ -28,7 +35,7 @@ export function renderTitle(string) {
     case "elevator":
       return "Elevator";
     case "ramp":
-      return "Dedicated ramp";
+      return "Ramp";
     case "stairs":
       return "Stairs";
     default:

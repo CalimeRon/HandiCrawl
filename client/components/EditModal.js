@@ -23,9 +23,12 @@ export default function EditModal({
   editModalScreen,
   setEditModalScreen,
   toggleCalloutToEdit,
+  temporaryHandiMarker,
+  setTemporaryHandiMarker,
+  toggleEditToIconSelection,
+  setIconEditModalScreen,
 }) {
   if (!currentCallout) return null;
-  const [temporaryHandiMarker, setTemporaryHandiMarker] = useState(null);
   const myDimensions = useWindowDimensions();
   const screenWidth = myDimensions.width;
   const screenHeight = myDimensions.height;
@@ -34,7 +37,9 @@ export default function EditModal({
   }
 
   useEffect(() => {
-    setTemporaryHandiMarker(currentCallout);
+    !temporaryHandiMarker?
+      setTemporaryHandiMarker(currentCallout)
+    : null;
   }, []);
 
   console.log("temp handi marker", temporaryHandiMarker);
@@ -62,25 +67,34 @@ export default function EditModal({
           <View style={styles.editContainer}>
             <View style={styles.iconImgContainer}>
               <Image
-                source={renderIcon(currentCallout.icon)}
+                source={temporaryHandiMarker ? renderIcon(temporaryHandiMarker.icon) :
+                renderIcon(currentCallout.icon)}
                 style={styles.generalIcon}
               />
               <Text style={styles.iconText}>
                 {renderTitle(currentCallout.icon)}
               </Text>
             </View>
+            <TouchableOpacity
+            onPress={()=> setIconEditModalScreen(true)}
+            >
             <Image
               source={require("../assets/edit.png")}
               style={[styles.trashIcon, styles.editIcon]}
               resizeMode="contain"
             />
+            </TouchableOpacity>
           </View>
           <Text style={[styles.generalText, styles.propertyText]}>
-            Edit place name...
+            Edit location...
           </Text>
           <View style={styles.editContainer}>
             <TextInput
-              style={[styles.generalText, styles.iconText, styles.placeNameText]}
+              style={[
+                styles.generalText,
+                styles.iconText,
+                styles.placeNameText,
+              ]}
               onChangeText={(text) => {
                 console.log(text);
                 setTemporaryHandiMarker({
@@ -102,7 +116,12 @@ export default function EditModal({
           </Text>
           <View style={[styles.editContainer, styles.descriptionContainer]}>
             <TextInput
-              style={[styles.generalText, styles.iconText, styles.placeNameText]}
+              multiline={true}
+              style={[
+                styles.generalText,
+                styles.iconText,
+                styles.placeNameText,
+              ]}
               onChangeText={(text) => {
                 console.log(text);
                 setTemporaryHandiMarker({
@@ -120,9 +139,11 @@ export default function EditModal({
           </View>
           <View style={styles.sendButton}>
             <TouchableOpacity>
-              <Text style={[styles.generalText, styles.sendButtonUpdate]}>Send Update</Text>
+              <Text style={[styles.generalText, styles.sendButtonUpdate]}>
+                Send Update
+              </Text>
             </TouchableOpacity>
-         </View>
+          </View>
         </View>
       </BlurView>
     </Modal>
@@ -186,7 +207,7 @@ const styles = StyleSheet.create({
     // borderColor: "#476C7D",
     marginLeft: 10,
     marginRight: 10,
-    marginBottom: 4,
+    marginBottom: 6,
     padding: 1,
     justifyContent: "space-between",
     elevation: 5,
@@ -273,6 +294,7 @@ const styles = StyleSheet.create({
     width: "80%",
     alignSelf: "flex-start",
     height: "100%",
+    textAlignVertical: "top",
   },
   propertyText: {
     paddingLeft: 15,
@@ -283,17 +305,20 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   sendButton: {
-    backgroundColor: '#75B0AF',
-    alignSelf: 'center',
+    backgroundColor: "#75B0AF",
+    alignSelf: "center",
     marginTop: 5,
     // marginBottom: 5,
     height: "15%",
     borderRadius: 10,
-    justifyContent: 'center',
+    justifyContent: "center",
     elevation: 3,
   },
   sendButtonUpdate: {
     margin: 4,
+    color: "#DEE7EA",
+    paddingLeft: 2,
+    paddingRight: 2,
   },
   titleText: {
     textAlign: "center",
