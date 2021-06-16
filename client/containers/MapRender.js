@@ -1,25 +1,17 @@
+//Welcome to the main container: the MapRender!
+
 import React, { useState, useEffect } from "react";
 import MapView from "react-native-maps";
 import CalloutModal from "../components/CalloutModal";
 import EditModal from "../components/EditModal";
 import IconModal from "../components/IconModal";
-import { BlurView } from "expo-blur";
 import {
   StyleSheet,
-  Text,
   View,
   Dimensions,
   Image,
-  Pressable,
-  Alert,
-  Modal,
-  TouchableHighlight,
-  KeyboardAvoidingView,
   useWindowDimensions,
-  Platform,
-  ScrollView,
 } from "react-native";
-import { BottomSheet } from "react-native-btr";
 import AddIconBottomSheet from "../components/AddIconBottomSheetComponent";
 import { renderIcon } from "../services/iconFactory";
 // import CalloutComponent from "../components/CalloutComponent";
@@ -29,28 +21,26 @@ export default function MapRender({
   setRegion,
   coords,
   setCoords,
-  stillInBounds,
   maxZoom,
   setMapLoaded,
 }) {
-  const [iconEvent, setIconEvent] = useState({});
-  const [visible, setVisible] = useState(false);
-  const [bottomSheetTriggered, setBottomSheetTriggered] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [currentCallout, setCurrentCallout] = useState(null);
-  const [currentIconSelected, setCurrentIconSelected] = useState(null);
+  const [iconEvent, setIconEvent] = useState({}); //will hold coordinates of where the user longpressed (to add a new marker)                 
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false); //if true, the bottom sheet to add a new marker renders
+  const [markerDetailsModalVisible, setMarkerDetailsModalVisible] = useState(false); //states that when true, renders the modal about a pressed existing marker
+  const [currentIconSelected, setCurrentIconSelected] = useState(null); //will hold longitude & latitude from the event where the user pressed an existing marker
+  const [currentCallout, setCurrentCallout] = useState(null); //will receive the stored marker data by matching latitude & longitude of currentIconSelect, in the array of coords. 
+  const [editModalScreen, setEditModalScreen] = useState(false);  //to conditionally render the edit modal screen when called from markerDetailsModalVisible
+  const [iconEditModalScreen, setIconEditModalScreen] = useState(false); //to conditionnally render the icon edit modal screen when called from editModalScreen
+  const [temporaryHandiMarker, setTemporaryHandiMarker] = useState(null); //when you edit an existing marker, the modifications are held here.
+  //This way, if the user cancels the edit, nothing will change. Otherwise the edits will be sent to the database with this. 
 
-  const [editModalScreen, setEditModalScreen] = useState(false);
-  const [iconEditModalScreen, setIconEditModalScreen] = useState(false);
-
-  const myDimensions = useWindowDimensions();
-  const [temporaryHandiMarker, setTemporaryHandiMarker] = useState(null);
-  // const [mapOpacity, setMapOpacity] = useState(0.1) //TODO: opacity
-  const screenWidth = myDimensions.width;
-  const screenHeight = myDimensions.height;
-console.log("region", region)
+  //This useEffect is called everytime the state of currentIconSelected is changed.
+  //Basically, on clicking on an existing marker, the event holds the coordinates of this marker (just longitude and latitude). 
+  //The value of currentIconSelected is set to this.
+  //It will then be matched against all the coords array, because the coords array holds the actual marker data (placeName, description, score etc.)
+  //So you filter the coords array to only give back the appropriate coordinate and hold it in currentCallout.
+  //This way, the modals will know which marker to present specifically.
   useEffect(() => {
-    // console.log('in useEffect', currentIconSelected, currentCallout, coords)
     setDimension(region);
     if (!currentIconSelected) return;
     const iconSelected = coords.filter((coord) => {
@@ -60,8 +50,9 @@ console.log("region", region)
       );
     });
     setCurrentCallout(iconSelected[0]);
-    // console.log("current callout",currentCallout)
   }, [currentIconSelected]);
+
+  
 
   //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
@@ -94,7 +85,8 @@ console.log("region", region)
             anchor={{ x: 0.5, y: 0.5 }}
             onPress={(e) => {
               // console.log("populating icons, coorditem=", e.nativeEvent)
-              setModalVisible(true);
+              setMarkerDetailsModalVisible(true);
+              console.log("current icon selected", e.nativeEvent.coordinate)
               setCurrentIconSelected(e.nativeEvent.coordinate);
             }}
           >
@@ -129,7 +121,7 @@ console.log("region", region)
   //populate the map by looping through each icon coordinate to render and creating a Marker component for each
 
   function toggleCalloutToEdit() {
-    setModalVisible(!modalVisible);
+    setMarkerDetailsModalVisible(!markerDetailsModalVisible);
     setEditModalScreen(!editModalScreen);
   }
 
@@ -166,19 +158,17 @@ console.log("region", region)
           if (region.latitudeDelta > maxZoom) return;
           else {
             setIconEvent(e.nativeEvent);
-            setVisible(true);
-            setBottomSheetTriggered(true);
+            setBottomSheetVisible(true);
           }
         }}
       >
         {populateRegion}
       </MapView>
-      {bottomSheetTriggered ? (
+      {bottomSheetVisible ? (
         <AddIconBottomSheet
           iconEvent={iconEvent}
-          visible={visible}
-          setVisible={setVisible}
-          setBottomSheetTriggered={setBottomSheetTriggered}
+          bottomSheetVisible={bottomSheetVisible}
+          setBottomSheetVisible={setBottomSheetVisible}
           setCoords={setCoords}
           coords={coords}
         />
@@ -188,8 +178,8 @@ console.log("region", region)
         <View style={styles.modalContainer}>
           <CalloutModal
             setCoords={setCoords}
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
+            markerDetailsModalVisible={markerDetailsModalVisible}
+            setMarkerDetailsModalVisible={setMarkerDetailsModalVisible}
             currentCallout={currentCallout}
             editModalScreen={editModalScreen}
             setEditModalScreen={setEditModalScreen}
@@ -201,8 +191,8 @@ console.log("region", region)
       {editModalScreen ? (
         <View style={styles.modalContainer}>
           <EditModal
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
+            markerDetailsModalVisible={markerDetailsModalVisible}
+            setMarkerDetailsModalVisible={setMarkerDetailsModalVisible}
             currentCallout={currentCallout}
             editModalScreen={editModalScreen}
             setEditModalScreen={setEditModalScreen}
@@ -223,8 +213,8 @@ console.log("region", region)
             toggleEditToIconSelection={toggleEditToIconSelection}
             setTemporaryHandiMarker={setTemporaryHandiMarker}
             iconEditModalScreen={iconEditModalScreen}
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
+            markerDetailsModalVisible={markerDetailsModalVisible}
+            setMarkerDetailsModalVisible={setMarkerDetailsModalVisible}
             currentCallout={currentCallout}
             editModalScreen={editModalScreen}
             setEditModalScreen={setEditModalScreen}
