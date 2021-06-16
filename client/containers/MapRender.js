@@ -243,7 +243,7 @@ const myScreen = {
   width: Dimensions.get("window").width,
   height: Dimensions.get("window").height,
   widthRatio: 1,
-  heightRatio: 0.65,
+  heightRatio: 0.72,
 };
 // const screenRatio = [0.85,0.9]
 
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 15,
     borderColor: "#EAF0F2",
     overflow: "hidden",
-    marginTop: 70,
+    marginTop: 20,
     // paddingTop: 20,
     width: myScreen.width * myScreen.widthRatio,
     height: myScreen.height * myScreen.heightRatio,

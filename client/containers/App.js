@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState, useCallback } from "react";
 import * as SplashScreen from "expo-splash-screen";
-// import Constants from 'expo-constants'
+import Constants from "expo-constants";
 import {
   Button,
   StyleSheet,
@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Dimensions,
+  TextInput,
 } from "react-native";
 import MapRender from "./MapRender";
 import AppLoading from "expo-app-loading";
@@ -39,6 +40,8 @@ import {
   K2D_800ExtraBold,
   K2D_800ExtraBold_Italic,
 } from "@expo-google-fonts/dev";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import InfoModal from "../components/InfoModal";
 
 export default function App() {
   const [asyncFirstLoad, setAsyncFirstLoad] = useState(false);
@@ -51,7 +54,10 @@ export default function App() {
   const [rerenderFix, setRerenderFix] = useState(1);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [appIsReady, setAppIsReady] = useState(false);
+  const [infoModalVisible, setInfoModalVisible] = useState(false);
   const maxZoom = 0.022;
+  const statusBarHeight = Constants.statusBarHeight;
+  console.log("sbh", statusBarHeight);
 
   //load custom fonts for the app
   let [fontsLoaded] = useFonts({
@@ -221,6 +227,34 @@ export default function App() {
               Press on a location to add a marker
             </Text>
           </View>
+
+          <View
+            // opacity={0.5}
+            style={styles.searchBarContainer}
+          >
+            {/* <View style={styles.searchBarIcon}>
+              <Image
+                source={require('../assets/magGlass2.png')}
+                resizeMode='contain'
+                style={styles.searchBarIconImg}
+              />
+              
+            </View>
+            <View style={styles.searchBarIcon}>
+              <Image
+                source={require('../assets/magGlass2.png')}
+                resizeMode='contain'
+                style={styles.searchBarIconImg}
+              />
+              
+            </View> */}
+            <View style={styles.searchBarTextContainer}>
+              <TextInput
+                placeholder="Search location..."
+                style={[styles.italicText, styles.searchBarText]}
+              ></TextInput>
+            </View>
+          </View>
           <MapRender
             region={region}
             coords={coords}
@@ -233,9 +267,34 @@ export default function App() {
           <View style={styles.bottomMainView}>
             <Text>Hella</Text>
           </View>
+          <View style={styles.infoContainerContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                setInfoModalVisible(true);
+              }}
+              style={styles.infoContainer}
+            >
+              {/* <View styles={styles.infoContainer}> */}
+              <Image
+                style={styles.infoIcon}
+                resizeMode="contain"
+                source={require("../assets/infoIcon.png")}
+              />
+              {/* </View> */}
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-      <StatusBar style="light" hidden={true} />
+
+      {infoModalVisible ? (
+        <View>
+          <InfoModal
+            infoModalVisible={infoModalVisible}
+            setInfoModalVisible={setInfoModalVisible}
+          />
+        </View>
+      ) : null}
+      <StatusBar style="light" hidden={false} />
     </View>
   );
 }
@@ -251,7 +310,7 @@ const styles = StyleSheet.create({
   bottomMainView: {
     backgroundColor: "#EAF0F2",
     width: "100%",
-    height: myScreen.height * 0.1,
+    // height: myScreen.height * 0.05,
   },
   container: {
     // flex: 1,
@@ -270,10 +329,75 @@ const styles = StyleSheet.create({
     backgroundColor: "#EAF0F2",
     borderTopLeftRadius: 70,
     borderTopRightRadius: 70,
+    height: "85%",
   },
   generalText: {
     fontFamily: "K2D_600SemiBold",
     color: "#1C333E",
+  },
+  italicText: {
+    fontFamily: "K2D_500Medium_Italic",
+  },
+  infoContainer: {
+    // height: '10%',
+    // position: "absolute",
+    // backgroundColor: "orange",
+    // zIndex: 1,
+    // bottom: 440,
+    // left: 100,
+  },
+  infoContainerContainer: {
+    // backgroundColor: 'blue',
+    position: "absolute",
+    right: 30,
+    top: 40,
+  },
+  infoIcon: {
+    height: 40,
+    width: 40,
+    // backgroundColor: "yellow",
+    // position: "absolute",
+    // bottom: 170,
+    // left: 10,
+    zIndex: 3,
+  },
+  searchBarContainer: {
+    backgroundColor: "#F3F6F7",
+    position: "absolute",
+    width: "80%",
+    height: "8%",
+    zIndex: 1,
+    elevation: 10,
+    right: "10%",
+    bottom: "15%",
+    borderRadius: 100,
+    // justifyContent: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  searchBarIcon: {
+    // flex: 1,
+    marginLeft: 14,
+    width: "10%",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "yellow",
+  },
+  searchBarIconImg: {
+    height: "70%",
+    // alignItems: 'center',
+    // justifyContent:'center',
+  },
+  searchBarTextContainer: {
+    justifyContent: "center",
+    // backgroundColor: 'yellow',
+    flexDirection: "row",
+    height: "100%",
+  },
+  searchBarText: {
+    marginLeft: 10,
+    alignItems: "center",
+    fontSize: 20,
   },
   splash: {
     alignItems: "center",
@@ -285,7 +409,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "yellow",
     width: "100%",
     position: "absolute",
-    top: "1%",
+    top: -60,
     zIndex: 1,
   },
   topMainViewText: {
