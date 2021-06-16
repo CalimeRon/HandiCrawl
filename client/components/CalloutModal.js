@@ -11,6 +11,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { renderIcon, renderTitle } from "../services/iconFactory";
 import { BlurView } from "expo-blur";
+import { deleteCoord, deleteCoords } from "../services/apiServices";
 const iconDimension = 50;
 
 export default function CalloutModal({
@@ -20,6 +21,7 @@ export default function CalloutModal({
   editModalScreen,
   setEditModalScreen,
   toggleCalloutToEdit,
+  setCoords,
 }) {
   // if (!currentCallout) return null;
   // useEffect(() => {
@@ -29,12 +31,12 @@ export default function CalloutModal({
   const [score, setScore] = useState(currentCallout.score);
   const [up, setUp] = useState(false);
   const [down, setDown] = useState(false);
-  const entranceScore = currentCallout.score
+  const entranceScore = currentCallout.score;
   useEffect(() => {
     if (up) setScore(entranceScore + 1);
     if (down) setScore(entranceScore - 1);
-    if (!up && !down) setScore(entranceScore)
-  },[up, down])
+    if (!up && !down) setScore(entranceScore);
+  }, [up, down]);
 
   function renderThumb(thumbString) {
     switch (thumbString) {
@@ -61,84 +63,93 @@ export default function CalloutModal({
       animationType="slide"
       // style={{  margin: 0, alignItems: 'center', justifyContent: 'center' }}
     >
-
-        <View style={styles.bubble}>
-          <View style={styles.iconImgContainer}>
-            <Image
-              source={renderIcon(currentCallout.icon)}
-              style={styles.generalIcon}
-            />
-          </View>
-          <View style={styles.thumbsContainer}>
-            <TouchableOpacity 
-              onPress={() => {
-                renderThumb('up');
-            }}>
-              <Image
-                source={
-                  up
-                    ? require("../assets/activeThumbsUp.png")
-                    : require("../assets/thumbsup.png")
-                }
-                style={[styles.thumbsIcon]}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-            <Text style={[styles.generalText, styles.scoreText]}>
-              {score}
-            </Text>
-            <TouchableOpacity 
+      <View style={styles.bubble}>
+        <View style={styles.iconImgContainer}>
+          <Image
+            source={renderIcon(currentCallout.icon)}
+            style={styles.generalIcon}
+          />
+        </View>
+        <View style={styles.thumbsContainer}>
+          <TouchableOpacity
             onPress={() => {
-                renderThumb('down');
+              renderThumb("up");
             }}
-            >
-              <Image
-                source={
-                  down
-                    ? require("../assets/activeThumbsDown.png")
-                    : require("../assets/thumbsdown.png")
-                }
-                style={[styles.thumbsIcon]}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.iconTitle}>
-            <Text style={[styles.generalText, styles.iconTitleText]}>
-              {renderTitle(currentCallout.icon)}
-            </Text>
-          </View>
-          <View style={styles.editBubble}>
+          >
+            <Image
+              source={
+                up
+                  ? require("../assets/activeThumbsUp.png")
+                  : require("../assets/thumbsup.png")
+              }
+              style={[styles.thumbsIcon]}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+          <Text style={[styles.generalText, styles.scoreText]}>{score}</Text>
+          <TouchableOpacity
+            onPress={() => {
+              renderThumb("down");
+            }}
+          >
+            <Image
+              source={
+                down
+                  ? require("../assets/activeThumbsDown.png")
+                  : require("../assets/thumbsdown.png")
+              }
+              style={[styles.thumbsIcon]}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.iconTitle}>
+          <Text style={[styles.generalText, styles.iconTitleText]}>
+            {renderTitle(currentCallout.icon)}
+          </Text>
+        </View>
+        <View style={styles.editBubble}>
+          <TouchableOpacity
+            onPress={() => {
+              deleteCoord(currentCallout);
+              setCoords((prev) => {
+                return prev.filter((coord) => {
+                  return coord.id !== currentCallout.id;
+                });
+              });
+              setModalVisible(false);
+            }}
+          >
             <Image
               source={require("../assets/trash.png")}
               style={[styles.trashIcon]}
               resizeMode="contain"
             />
-            <TouchableOpacity
-              onPress={() => {
-                toggleCalloutToEdit();
-              }}
-            >
-              <Image
-                source={require("../assets/edit.png")}
-                style={[styles.trashIcon, styles.editIcon]}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.middleBubble}>
-            <View style={styles.locationContainer}>
-              <Text style={[styles.generalText, styles.placeNameText]}>
-                {currentCallout.placeName}
-              </Text>
-              <Text style={[styles.generalText, styles.descriptionText]}>
-                {currentCallout.description}
-              </Text>
-            </View>
-          </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              toggleCalloutToEdit();
+            }}
+          >
+            <Image
+              source={require("../assets/edit.png")}
+              style={[styles.trashIcon, styles.editIcon]}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
         </View>
 
+        <View style={styles.middleBubble}>
+          <View style={styles.locationContainer}>
+            <Text style={[styles.generalText, styles.placeNameText]}>
+              {currentCallout.placeName}
+            </Text>
+            <Text style={[styles.generalText, styles.descriptionText]}>
+              {currentCallout.description}
+            </Text>
+          </View>
+        </View>
+      </View>
     </Modal>
   );
 }
@@ -231,7 +242,7 @@ const styles = StyleSheet.create({
   // iconTouchable: {
   //   width: iconDimension - 10,
   //   height: iconDimension - 20,
-  // }, 
+  // },
   locationContainer: {
     flexDirection: "column",
     // alignItems: "center",
@@ -268,7 +279,7 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     fontSize: 30,
-    textAlign: 'center',
+    textAlign: "center",
     width: 30,
     // backgroundColor : 'yellow',
   },

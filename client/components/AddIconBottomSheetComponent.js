@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   bottomNavigationView: {
     backgroundColor: "#EAF0F2",
     // width: "100%",
-    height: 320,
+    height: 400,
     // justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
@@ -350,6 +350,7 @@ const styles = StyleSheet.create({
   generalText: {
     fontFamily: "K2D_600SemiBold",
     color: "#1C333E",
+    textAlign:'center',
   },
   handiMarkerContainer: {
     flexDirection: "column",
@@ -415,6 +416,7 @@ const styles = StyleSheet.create({
     width: "80%",
     // alignSelf: "flex-start",
     height: 35,
+    textAlign: 'left',
   },
   propertyText: {
     paddingLeft: 15,
@@ -422,6 +424,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginBottom: 2,
     marginTop: 10,
+    textAlign: 'left'
   },
   textStyle: {
     color: "white",

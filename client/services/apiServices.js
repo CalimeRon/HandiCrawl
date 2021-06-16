@@ -25,22 +25,22 @@ export async function getCoords(region) {
 
   console.log("fetching initiated", region);
 
-  // const coordinates = dbh.collection("coordinates");
-  // const bounds = getBounds(region);
-  // const query = await coordinates
-  //   .where("latitude", ">=", bounds.minLat)
-  //   .where("latitude", "<=", bounds.maxLat)
-  //   .get();
-  // const coordsArray = [];
-  // query.docs.forEach((doc) => {
-  //   console.log("doc data", doc.id);
-  //   coordsArray.push({
-  //     ...doc.data(),
-  //     id: doc.id,
-  //   });
-  // });
-  // console.log("coordsArray before leaving", coordsArray)
-  // return coordsArray;
+  const coordinates = dbh.collection("coordinates");
+  const bounds = getBounds(region);
+  const query = await coordinates
+    .where("latitude", ">=", bounds.minLat)
+    .where("latitude", "<=", bounds.maxLat)
+    .get();
+  const coordsArray = [];
+  query.docs.forEach((doc) => {
+    // console.log("doc data", doc.id);
+    coordsArray.push({
+      ...doc.data(),
+      id: doc.id,
+    });
+  });
+  console.log("coordsArray before leaving", coordsArray.length >0)
+  return coordsArray;
 
   // I keep this below to test without wasting requests to Firestore (since there's a quota)
   return [
@@ -67,11 +67,17 @@ export async function getCoords(region) {
 
 export async function postNewCoord(coord) {
   // console.log("in async posting", coord)
-  // const res = await dbh.collection("coordinates").add(coord);
-  console.log("SEEEENT");
+  const res = await dbh.collection("coordinates").add(coord);
+  console.log("SEEEENT", !!res);
   // console.log('Added document with ID:', res.id);
 }
 
 export async function updateCoord (coord) {
-  // const res = await dbh.collection("coordinates").doc(coord.id).set(coord)
+  const res = await dbh.collection("coordinates").doc(coord.id).set(coord)
+  console.log('uuuupdaaated', !!res)
+}
+
+export async function deleteCoord (coord) {
+  const res = await dbh.collection("coordinates").doc(coord.id).delete()
+  console.log('deleted snif snif ', !!res)
 }

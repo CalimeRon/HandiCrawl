@@ -58,7 +58,7 @@ export default function IconModal({
     <Modal
       transparent={true}
       visible={iconEditModalScreen}
-      onRequestClose={() => toggleEditToIconSelection()}
+      onRequestClose={() => setIconEditModalScreen(false)}
       animationType="slide"
     >
       <View style={styles.bubble}>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     // width: "100%",
     width: "90%",
-    height: 310,
+    height: 400,
     // height: "100%",
     position: "absolute",
     bottom: "30%",
@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
   generalText: {
     fontFamily: "K2D_600SemiBold",
     color: "#1C333E",
+    textAlign: 'center',
   },
   handiMarkerContainer: {
     flexDirection: "column",

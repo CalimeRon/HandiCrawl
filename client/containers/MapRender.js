@@ -48,7 +48,7 @@ export default function MapRender({
   // const [mapOpacity, setMapOpacity] = useState(0.1) //TODO: opacity
   const screenWidth = myDimensions.width;
   const screenHeight = myDimensions.height;
-
+console.log("region", region)
   useEffect(() => {
     // console.log('in useEffect', currentIconSelected, currentCallout, coords)
     setDimension(region);
@@ -61,7 +61,7 @@ export default function MapRender({
     });
     setCurrentCallout(iconSelected[0]);
     // console.log("current callout",currentCallout)
-  }, [currentIconSelected, region.latitudeDelta]);
+  }, [currentIconSelected]);
 
   //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
@@ -187,6 +187,7 @@ export default function MapRender({
       {currentCallout ? (
         <View style={styles.modalContainer}>
           <CalloutModal
+            setCoords={setCoords}
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
             currentCallout={currentCallout}

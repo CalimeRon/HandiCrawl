@@ -32,6 +32,7 @@ export default function InfoModal ({
         key={icon}
         style={styles.infoContainer}>
         <Image
+          
           style={styles.iconImg}
           source={renderIcon(icon)}
           resizeMode='contain'
@@ -44,6 +45,7 @@ export default function InfoModal ({
 
   return (
     <Modal
+      animationType='slide'
       transparent={true}
       visible={infoModalVisible}
       onRequestClose={() => setInfoModalVisible(false)}
@@ -59,14 +61,15 @@ export default function InfoModal ({
 const styles = StyleSheet.create({
   generalText: {
     fontFamily: "K2D_600SemiBold",
-    color: "#1C333E",
-    fontSize: 20,
+    color: "#EAF0F2",
+    fontSize: 15,
     // backgroundColor: 'orange',
     width: '80%',
-    marginLeft: 4,
+    marginLeft: 8,
     // height: 10,
     // flex: 1,
     flexWrap: 'wrap',
+    textAlign: 'justify'
   },
   iconImg: {
     height: 40,
@@ -84,7 +87,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignSelf: "center",
     position: "absolute",
-    top:'15%',
+    top: '15%',
+    paddingTop: 10,
+    opacity: 0.9,
   },
   infoContainer: {
     // backgroundColor: 'blue',

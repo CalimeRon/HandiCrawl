@@ -1,10 +1,13 @@
 export const allIcons = [
-  "warning",
-  "easyAccess",
-  "elevator",
   "ramp",
-  "stairs",
+  "elevator",
+  "easyAccess",
   'parking',
+  "warning",
+  "stairs",
+  'goodMetro',
+  'badMetro',
+  'codeworks'
 ]
 
   // Access the icon png depending on the iconId parameter inside the location object
@@ -23,6 +26,12 @@ export function renderIcon (iconId) {
       return require("../assets/stairs.png");
     case "parking":
       return require('../assets/parkingSpot.png')
+    case 'badMetro':
+      return require('../assets/badMetro.png')
+    case 'goodMetro':
+      return require('../assets/goodMetro.png')
+    case 'codeworks':
+      return require('../assets/codepng.png')
     default:
       return require("../assets/smilou.png");
   }
@@ -43,6 +52,12 @@ export function renderTitle(string) {
       return "Stairs";
     case "parking":
       return "Parking spot";
+    case "badMetro":
+      return "Bad metro access"
+    case 'goodMetro':
+      return "Good metro access"
+    case 'codeworks':
+      return 'Temple of frustration'
     default:
       return null;
   }
@@ -53,7 +68,7 @@ export function renderDescr(string) {
     case "warning":
       return "Put this marker to describe a tricky path (bad road, bumps...)";
     case "easyAccess":
-      return "Put this marker for relatively easy paths (flat paths, no bareer...)";
+      return "Put this marker for relatively easy paths (flat paths, no obstacles...)";
     case "elevator":
       return "Put this marker if there is an device that allows you to move up and down thanks to elelectricity.a.k.a.an elevator"
     case "ramp":
@@ -62,6 +77,12 @@ export function renderDescr(string) {
       return "Put this icon if there are stairs. You can precise in the description how steep they are";
     case "parking":
       return "Put this icon where you find a dedicated parking spot";
+    case "badMetro":
+      return "Put this icon if the metro station has no easy access on this location";
+    case 'goodMetro':
+      return "Put this icon the the metro station has an easy acces on this location"
+    case 'codeworks':
+      return "Put this icon if you hear screams of frustrations and noises of heads banging against walls"
     default:
       return null;
   }
