@@ -1,44 +1,25 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState, useCallback } from "react";
 import * as SplashScreen from "expo-splash-screen";
-import Constants from "expo-constants";
 import {
-  Button,
   StyleSheet,
   Text,
   View,
   Image,
-  useWindowDimensions,
-  KeyboardAvoidingView,
-  ScrollView,
   Dimensions,
   TextInput,
 } from "react-native";
 import MapRender from "./MapRender";
-import AppLoading from "expo-app-loading";
 import * as Location from "expo-location";
-import * as Network from "expo-network";
 import { getCoords, getBounds } from "../services/apiServices";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+
 import {
   useFonts,
-  K2D_100Thin,
-  K2D_100Thin_Italic,
-  K2D_200ExtraLight,
-  K2D_200ExtraLight_Italic,
-  K2D_300Light,
   K2D_300Light_Italic,
-  K2D_400Regular,
   K2D_400Regular_Italic,
-  K2D_500Medium,
   K2D_500Medium_Italic,
   K2D_600SemiBold,
-  K2D_600SemiBold_Italic,
-  K2D_700Bold,
-  K2D_700Bold_Italic,
   K2D_800ExtraBold,
-  K2D_800ExtraBold_Italic,
 } from "@expo-google-fonts/dev";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import InfoModal from "../components/InfoModal";
@@ -61,11 +42,11 @@ export default function App() {
 
   //load custom fonts for the app
   let [fontsLoaded] = useFonts({
-    K2D_300Light_Italic, //
-    K2D_400Regular_Italic, //
-    K2D_500Medium_Italic, //
-    K2D_600SemiBold, //
-    K2D_800ExtraBold, //
+    K2D_300Light_Italic,
+    K2D_400Regular_Italic,
+    K2D_500Medium_Italic,
+    K2D_600SemiBold,
+    K2D_800ExtraBold,
   });
 
   //first time loading, get the first area to populate based on user location
@@ -167,10 +148,6 @@ export default function App() {
   //   };
   // }, []);
 
-  //flag for Location permission onfirstload. It will keep trying to get
-  //user location until it's finally there
-  let success = false;
-
   if (!appIsReady) return null;
 
   return (
@@ -248,16 +225,12 @@ const styles = StyleSheet.create({
   bottomMainView: {
     backgroundColor: "#EAF0F2",
     width: "100%",
-    // height: myScreen.height * 0.05,
   },
   container: {
-    // flex: 1,
     backgroundColor: "#1C333E",
     alignItems: "center",
     justifyContent: "flex-end",
     flexDirection: "column",
-    // position: "absolute",
-    // top: 50,
 
     width: myScreen.width * myScreen.widthRatio,
     height: myScreen.height * myScreen.heightRatio,
@@ -276,16 +249,7 @@ const styles = StyleSheet.create({
   italicText: {
     fontFamily: "K2D_500Medium_Italic",
   },
-  infoContainer: {
-    // height: '10%',
-    // position: "absolute",
-    // backgroundColor: "orange",
-    // zIndex: 1,
-    // bottom: 440,
-    // left: 100,
-  },
   infoContainerContainer: {
-    // backgroundColor: 'blue',
     position: "absolute",
     right: 30,
     top: 40,
@@ -293,10 +257,7 @@ const styles = StyleSheet.create({
   infoIcon: {
     height: 40,
     width: 40,
-    // backgroundColor: "yellow",
-    // position: "absolute",
-    // bottom: 170,
-    // left: 10,
+
     zIndex: 3,
   },
   searchBarContainer: {
@@ -309,12 +270,11 @@ const styles = StyleSheet.create({
     right: "10%",
     bottom: "15%",
     borderRadius: 100,
-    // justifyContent: "flex-start",
+
     flexDirection: "row",
     alignItems: "center",
   },
   searchBarIcon: {
-    // flex: 1,
     marginLeft: 14,
     width: "10%",
     alignItems: "center",
@@ -323,12 +283,10 @@ const styles = StyleSheet.create({
   },
   searchBarIconImg: {
     height: "70%",
-    // alignItems: 'center',
-    // justifyContent:'center',
   },
   searchBarTextContainer: {
     justifyContent: "center",
-    // backgroundColor: 'yellow',
+
     flexDirection: "row",
     height: "100%",
   },
@@ -344,7 +302,6 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   topMainView: {
-    // backgroundColor: "yellow",
     width: "100%",
     position: "absolute",
     top: -60,

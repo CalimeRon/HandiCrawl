@@ -5,13 +5,7 @@ import MapView from "react-native-maps";
 import CalloutModal from "../components/CalloutModal";
 import EditModal from "../components/EditModal";
 import IconEditModal from "../components/IconEditModal";
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Image,
-  useWindowDimensions,
-} from "react-native";
+import { StyleSheet, View, Dimensions, Image } from "react-native";
 import AddIconBottomSheet from "../components/AddIconBottomSheet";
 import { renderIcon } from "../services/iconFactory";
 // import CalloutComponent from "../components/CalloutComponent";
@@ -58,15 +52,15 @@ export default function MapRender({
     setDimension(region);
   }, [region]);
 
+  //creates the conditional width and height of icons by calling setDimension
+  let dimension = setDimension(region);
+
   //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
     if (!region) return;
     if (region.latitudeDelta > 0.004) return 30;
     else return 50;
   };
-
-  //creates the conditional width and height of icons by calling setDimension
-  let dimension = setDimension(region);
 
   console.log(
     coords.length !== 0,
@@ -96,7 +90,7 @@ export default function MapRender({
             coordinate={coordItem}
             anchor={{ x: 0.5, y: 0.5 }}
             onPress={(e) => {
-              //if you press a marker, get the coordinates, and open the modal with the 
+              //if you press a marker, get the coordinates, and open the modal with the
               //appropriate data (later on)
               setMarkerDetailsModalVisible(true);
               console.log("current icon selected", e.nativeEvent.coordinate);
@@ -122,10 +116,9 @@ export default function MapRender({
                 source={renderIcon(coordItem.icon)}
               />
             </View>
-            <MapView.Callout tooltip={false}>
-              {/*  */}
-              {/* <CalloutComponent coordItem={coordItem} /> */}
-            </MapView.Callout>
+            {/* This below prevents the default tooltip from opening
+            when clicking on a marker, because I have my own custom ones. */}
+            <MapView.Callout tooltip={false}></MapView.Callout>
           </MapView.Marker>
         </View>
       );
@@ -138,7 +131,7 @@ export default function MapRender({
   //----EditModal
   //---------IconEdit Modal
   //in which case MapRend doesn't need to hold those states
-  //but didn't have time! 
+  //but didn't have time!
   function toggleCalloutToEdit() {
     setMarkerDetailsModalVisible(!markerDetailsModalVisible);
     setEditModalScreen(!editModalScreen);
@@ -150,7 +143,6 @@ export default function MapRender({
   }
 
   return (
-
     <View style={styles.container}>
       <MapView
         onRegionChangeComplete={(region) => setRegion(region)}
@@ -231,7 +223,6 @@ export default function MapRender({
         </View>
       ) : null}
     </View>
-
   );
 }
 
@@ -273,8 +264,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     position: "absolute",
   },
-  marker: {
-  },
+  marker: {},
 });
 
 //imported style for regular markers of the map
