@@ -96,7 +96,8 @@ export default function MapRender({
             coordinate={coordItem}
             anchor={{ x: 0.5, y: 0.5 }}
             onPress={(e) => {
-              // console.log("populating icons, coorditem=", e.nativeEvent)
+              //if you press a marker, get the coordinates, and open the modal with the 
+              //appropriate data (later on)
               setMarkerDetailsModalVisible(true);
               console.log("current icon selected", e.nativeEvent.coordinate);
               setCurrentIconSelected(e.nativeEvent.coordinate);
