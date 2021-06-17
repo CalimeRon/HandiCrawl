@@ -1,13 +1,8 @@
+//modal to render when you click the little information icon upper right
+
 import { Text, View, StyleSheet, Image, Modal } from "react-native";
-import React, { useState, useEffect } from "react";
-import {
-  renderIcon,
-  renderTitle,
-  allIcons,
-  renderDescr,
-} from "../services/iconFactory";
-import { BlurView } from "expo-blur";
-import symbolicateStackTrace from "react-native/Libraries/Core/Devtools/symbolicateStackTrace";
+import React from "react";
+import { renderIcon, allIcons, renderDescr } from "../services/iconFactory";
 
 export default function InfoModal({ infoModalVisible, setInfoModalVisible }) {
   let infoContainerView = allIcons.map((icon) => {
@@ -40,11 +35,8 @@ const styles = StyleSheet.create({
     fontFamily: "K2D_600SemiBold",
     color: "#EAF0F2",
     fontSize: 15,
-    // backgroundColor: 'orange',
     width: "80%",
     marginLeft: 8,
-    // height: 10,
-    // flex: 1,
     flexWrap: "wrap",
     textAlign: "justify",
   },
@@ -52,12 +44,10 @@ const styles = StyleSheet.create({
     height: 40,
     width: 40,
     marginLeft: 10,
-    // backgroundColor: 'yellow',
   },
   infoModalView: {
     flexDirection: "column",
     borderRadius: 20,
-    // width: "100%",
     width: "90%",
     backgroundColor: "#1C333E",
     alignItems: "flex-start",
@@ -69,12 +59,9 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   infoContainer: {
-    // backgroundColor: 'blue',
     flexDirection: "row",
-    // flexWrap: 'wrap',
     alignItems: "center",
     justifyContent: "flex-start",
-    // flex: 1,
     width: "100%",
     marginBottom: 10,
   },

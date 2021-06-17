@@ -19,50 +19,53 @@ export function getBounds(region) {
   return formattedBounds;
 }
 
+//fetches the appropriate data from the database
 export async function getCoords(region) {
-  // console.log(" entered getcoords, fetching not initiated", region);
+
   if (!region) return;
 
   console.log("fetching initiated", region);
 
-  // const coordinates = dbh.collection("coordinates");
-  // const bounds = getBounds(region);
-  // const query = await coordinates
-  //   .where("latitude", ">=", bounds.minLat)
-  //   .where("latitude", "<=", bounds.maxLat)
-  //   .get();
-  // const coordsArray = [];
-  // query.docs.forEach((doc) => {
-  //   // console.log("doc data", doc.id);
-  //   coordsArray.push({
-  //     ...doc.data(),
-  //     id: doc.id,
-  //   });
-  // });
-  // console.log("coordsArray before leaving", coordsArray.length >0)
-  // return coordsArray;
+  const coordinates = dbh.collection("coordinates");
+  const bounds = getBounds(region);
+  const query = await coordinates
+    .where("latitude", ">=", bounds.minLat)
+    .where("latitude", "<=", bounds.maxLat)
+    .get();
+  const coordsArray = [];
+  query.docs.forEach((doc) => {
+    // console.log("doc data", doc.id);
+    coordsArray.push({
+      ...doc.data(),
+      id: doc.id,
+    });
+  });
+  console.log("coordsArray before leaving", coordsArray.length >0)
+  return coordsArray;
 
   // I keep this below to test without wasting requests to Firestore (since there's a quota)
-  return [
-    {
-      id: "60c3234d36ac69e8941637b0",
-      placeName: "Dans ton gros cul pourri",
-      icon: "ramp",
-      latitude: 44.43750100149944,
-      longitude: 26.09280906994737,
-      description: "entrance by the East Side - ramp available",
-      score: 0,
-    },
-    {
-      id: "OfabKCtMaaS1WrsDbS8N",
-      placeName: "Ion Campineanu 29 bloc 6 Sc.1",
-      icon: "warning",
-      latitude: 44.438269898955824,
-      longitude: 26.094277233533187,
-      description: "floor not flat for wheelchairs",
-      score: 0,
-    },
-  ];
+  // If you want to call your actual firestore database, uncomment the part
+  //above
+  // return [
+  //   {
+  //     id: "60c3234d36ac69e8941637b0",
+  //     placeName: "Dans ton gros cul pourri",
+  //     icon: "ramp",
+  //     latitude: 44.43750100149944,
+  //     longitude: 26.09280906994737,
+  //     description: "entrance by the East Side - ramp available",
+  //     score: 0,
+  //   },
+  //   {
+  //     id: "OfabKCtMaaS1WrsDbS8N",
+  //     placeName: "Ion Campineanu 29 bloc 6 Sc.1",
+  //     icon: "warning",
+  //     latitude: 44.438269898955824,
+  //     longitude: 26.094277233533187,
+  //     description: "floor not flat for wheelchairs",
+  //     score: 0,
+  //   },
+  // ];
 }
 
 export async function postNewCoord(coord) {
@@ -72,7 +75,7 @@ export async function postNewCoord(coord) {
   // console.log('Added document with ID:', res.id);
 }
 
-export async function updateCoord (coord) {
+export async function sendUpdateCoord (coord) {
   const res = await dbh.collection("coordinates").doc(coord.id).set(coord)
   console.log('uuuupdaaated', !!res)
 }

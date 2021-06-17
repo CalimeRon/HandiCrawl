@@ -1,3 +1,4 @@
+//modal called when you want to edit the icon ppic
 import {
   Text,
   View,
@@ -5,25 +6,17 @@ import {
   Image,
   Modal,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  ScrollView,
-  TextInput,
-  KeyboardAvoidingView,
-  useWindowDimensions,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { renderIcon, renderTitle, allIcons } from "../services/iconFactory";
-import { BlurView } from "expo-blur";
 
 export default function IconModal({
-  toggleEditToIconSelection,
   setTemporaryHandiMarker,
   iconEditModalScreen,
   temporaryHandiMarker,
   setIconEditModalScreen,
 }) {
-  console.log("in icon modal");
-
+  //render each icon from the icon factory
   const iconButton = allIcons.map((iconString) => {
     return (
       <View style={styles.iconImgContainer} key={iconString}>
@@ -75,28 +68,20 @@ const styles = StyleSheet.create({
   bubble: {
     flexDirection: "column",
     borderRadius: 20,
-    // width: "100%",
     width: "90%",
     height: 400,
-    // height: "100%",
     position: "absolute",
     bottom: "30%",
     backgroundColor: "#EAF0F2",
     paddingTop: "0%",
     borderRadius: 20,
-    // paddingLeft: "1%",
-    // paddingRight: "1%",
-    // alignItems: "center",
     alignSelf: "center",
-    // justifyContent: "center",
-    // zIndex: 1,
     elevation: 23,
-    // backgroundColor: "orange",
   },
   generalText: {
     fontFamily: "K2D_600SemiBold",
     color: "#1C333E",
-    textAlign: 'center',
+    textAlign: "center",
   },
   handiMarkerContainer: {
     flexDirection: "column",
@@ -104,8 +89,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 4,
     borderStyle: "solid",
-    // borderColor: "blue",
-    // borderWidth: 1,
     marginRight: 4,
     marginBottom: 4,
     width: 100,
@@ -122,7 +105,6 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     marginBottom: 3,
-    // backgroundColor: "orange",
   },
   iconText: {
     paddingLeft: 5,
@@ -133,6 +115,5 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#dcdddc",
     marginBottom: 1,
-    // backgroundColor: 'yellow'
   },
 });

@@ -8,13 +8,10 @@ import {
   Image,
   Modal,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  ScrollView,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { renderIcon, renderTitle } from "../services/iconFactory";
-import { BlurView } from "expo-blur";
-import { deleteCoord, deleteCoords } from "../services/apiServices";
+import { deleteCoord } from "../services/apiServices";
 import ThumbComponent from "./ThumbComponent";
 const iconDimension = 50;
 
@@ -25,10 +22,6 @@ export default function CalloutModal({
   toggleCalloutToEdit,
   setCoords,
 }) {
-  const [editModalScreen, setEditModalScreen] = useState(false); //to conditionally render the edit modal screen when called from markerDetailsModalVisible
-
-
-
 
   return (
     <Modal
@@ -45,7 +38,7 @@ export default function CalloutModal({
             style={styles.generalIcon}
           />
         </View>
-        
+
         <ThumbComponent
           currentCallout={currentCallout}
         />
@@ -55,6 +48,11 @@ export default function CalloutModal({
             {renderTitle(currentCallout.icon)}
           </Text>
         </View>
+        {/* 
+        trash and edit icon  below. if you press on 
+        trash: delete coordinate (not reversible)
+        edit: open the edit modal
+        */}
         <View style={styles.editBubble}>
           <TouchableOpacity
             onPress={() => {

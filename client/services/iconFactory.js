@@ -37,7 +37,7 @@ export function renderIcon (iconId) {
   }
 }
 
-
+//access a prettier title
 export function renderTitle(string) {
   switch (string) {
     case "warning":
@@ -63,6 +63,7 @@ export function renderTitle(string) {
   }
 }
 
+//access the icon description
 export function renderDescr(string) {
   switch (string) {
     case "warning":

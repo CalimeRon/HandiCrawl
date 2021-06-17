@@ -214,9 +214,7 @@ export default function MapRender({
             toggleCalloutToEdit={toggleCalloutToEdit}
             temporaryHandiMarker={temporaryHandiMarker}
             setTemporaryHandiMarker={setTemporaryHandiMarker}
-            toggleEditToIconSelection={toggleEditToIconSelection}
             setIconEditModalScreen={setIconEditModalScreen}
-            coords={coords}
             setCoords={setCoords}
           />
         </View>
@@ -225,15 +223,8 @@ export default function MapRender({
       {iconEditModalScreen ? (
         <View style={styles.modalContainer}>
           <IconEditModal
-            toggleEditToIconSelection={toggleEditToIconSelection}
             setTemporaryHandiMarker={setTemporaryHandiMarker}
             iconEditModalScreen={iconEditModalScreen}
-            markerDetailsModalVisible={markerDetailsModalVisible}
-            setMarkerDetailsModalVisible={setMarkerDetailsModalVisible}
-            currentCallout={currentCallout}
-            editModalScreen={editModalScreen}
-            setEditModalScreen={setEditModalScreen}
-            toggleCalloutToEdit={toggleCalloutToEdit}
             temporaryHandiMarker={temporaryHandiMarker}
             setIconEditModalScreen={setIconEditModalScreen}
           />
@@ -241,7 +232,6 @@ export default function MapRender({
       ) : null}
     </View>
 
-    // </KeyboardAvoidingView>
   );
 }
 
@@ -251,35 +241,19 @@ const myScreen = {
   widthRatio: 1,
   heightRatio: 0.72,
 };
-// const screenRatio = [0.85,0.9]
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // backgroundColor: "blue",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 70,
-    // borderTopLeftRadius: 50,
-    // borderWidth: 40,
-    // marginTop: 70,
-    // borderTopWidth: 60,
     borderLeftWidth: 15,
     borderRightWidth: 15,
     borderColor: "#EAF0F2",
     overflow: "hidden",
     marginTop: 20,
-    // paddingTop: 20,
     width: myScreen.width * myScreen.widthRatio,
     height: myScreen.height * myScreen.heightRatio,
-    // width: '100%',
-    // height: '100%',
-    // position: 'absolute',
-    // left: '7%',
-    // zIndex: 1,
-    // elevation: 20,
-    // top: myScreen.height * 0.15,
-    // left: myScreen.width * 0,
   },
   map: {
     width: "100%",
@@ -297,13 +271,9 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalContainer: {
-    // flex: 1,
-    // justifyContent: 'center',
-    // flexDirection: 'column',
     position: "absolute",
   },
   marker: {
-    // backgroundColor: 'blue'
   },
 });
 
