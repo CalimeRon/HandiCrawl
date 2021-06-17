@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import MapView from "react-native-maps";
 import CalloutModal from "../components/CalloutModal";
 import EditModal from "../components/EditModal";
-import IconModal from "../components/IconModal";
+import IconEditModal from "../components/IconEditModal";
 import {
   StyleSheet,
   View,
@@ -12,7 +12,7 @@ import {
   Image,
   useWindowDimensions,
 } from "react-native";
-import AddIconBottomSheet from "../components/AddIconBottomSheetComponent";
+import AddIconBottomSheet from "../components/AddIconBottomSheet";
 import { renderIcon } from "../services/iconFactory";
 // import CalloutComponent from "../components/CalloutComponent";
 
@@ -23,25 +23,26 @@ export default function MapRender({
   setCoords,
   maxZoom,
   setMapLoaded,
+  stillInBonds,
 }) {
-  const [iconEvent, setIconEvent] = useState({}); //will hold coordinates of where the user longpressed (to add a new marker)                 
+  const [iconEvent, setIconEvent] = useState({}); //will hold coordinates of where the user longpressed (to add a new marker)
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false); //if true, the bottom sheet to add a new marker renders
-  const [markerDetailsModalVisible, setMarkerDetailsModalVisible] = useState(false); //states that when true, renders the modal about a pressed existing marker
+  const [markerDetailsModalVisible, setMarkerDetailsModalVisible] =
+    useState(false); //states that when true, renders the modal about a pressed existing marker
   const [currentIconSelected, setCurrentIconSelected] = useState(null); //will hold longitude & latitude from the event where the user pressed an existing marker
-  const [currentCallout, setCurrentCallout] = useState(null); //will receive the stored marker data by matching latitude & longitude of currentIconSelect, in the array of coords. 
-  const [editModalScreen, setEditModalScreen] = useState(false);  //to conditionally render the edit modal screen when called from markerDetailsModalVisible
+  const [currentCallout, setCurrentCallout] = useState(null); //will receive the stored marker data by matching latitude & longitude of currentIconSelect, in the array of coords.
+  const [editModalScreen, setEditModalScreen] = useState(false); //to conditionally render the edit modal screen when called from markerDetailsModalVisible
   const [iconEditModalScreen, setIconEditModalScreen] = useState(false); //to conditionnally render the icon edit modal screen when called from editModalScreen
   const [temporaryHandiMarker, setTemporaryHandiMarker] = useState(null); //when you edit an existing marker, the modifications are held here.
-  //This way, if the user cancels the edit, nothing will change. Otherwise the edits will be sent to the database with this. 
+  //This way, if the user cancels the edit, nothing will change. Otherwise the edits will be sent to the database with this.
 
   //This useEffect is called everytime the state of currentIconSelected is changed.
-  //Basically, on clicking on an existing marker, the event holds the coordinates of this marker (just longitude and latitude). 
+  //Basically, on clicking on an existing marker, the event holds the coordinates of this marker (just longitude and latitude).
   //The value of currentIconSelected is set to this.
   //It will then be matched against all the coords array, because the coords array holds the actual marker data (placeName, description, score etc.)
   //So you filter the coords array to only give back the appropriate coordinate and hold it in currentCallout.
   //This way, the modals will know which marker to present specifically.
   useEffect(() => {
-    setDimension(region);
     if (!currentIconSelected) return;
     const iconSelected = coords.filter((coord) => {
       return (
@@ -52,7 +53,10 @@ export default function MapRender({
     setCurrentCallout(iconSelected[0]);
   }, [currentIconSelected]);
 
-  
+  //adapt the size of the icons depending on zoom level
+  useEffect(() => {
+    setDimension(region);
+  }, [region]);
 
   //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
@@ -64,14 +68,22 @@ export default function MapRender({
   //creates the conditional width and height of icons by calling setDimension
   let dimension = setDimension(region);
 
+  console.log(
+    coords.length !== 0,
+    coords !== undefined,
+    region.latitudeDelta < maxZoom,
+    !stillInBonds
+  );
   //populate region will render the actual icon for each coordinate loaded in the area
   //by looping through the coords array
   let populateRegion;
   if (
     coords.length !== 0 &&
     coords !== undefined &&
-    region.latitudeDelta < maxZoom
+    region.latitudeDelta < maxZoom &&
+    !stillInBonds
   ) {
+    //create a marker for each element in the coords array
     populateRegion = coords.map((coordItem) => {
       console.log("firing populate region");
       return (
@@ -86,7 +98,7 @@ export default function MapRender({
             onPress={(e) => {
               // console.log("populating icons, coorditem=", e.nativeEvent)
               setMarkerDetailsModalVisible(true);
-              console.log("current icon selected", e.nativeEvent.coordinate)
+              console.log("current icon selected", e.nativeEvent.coordinate);
               setCurrentIconSelected(e.nativeEvent.coordinate);
             }}
           >
@@ -118,8 +130,14 @@ export default function MapRender({
       );
     });
   } else populateRegion = null;
-  //populate the map by looping through each icon coordinate to render and creating a Marker component for each
 
+  //the parent holds the modal states (hence the toggles below) but technically
+  //you could have a hierarchy like this
+  //CalloutModal
+  //----EditModal
+  //---------IconEdit Modal
+  //in which case MapRend doesn't need to hold those states
+  //but didn't have time! 
   function toggleCalloutToEdit() {
     setMarkerDetailsModalVisible(!markerDetailsModalVisible);
     setEditModalScreen(!editModalScreen);
@@ -131,11 +149,6 @@ export default function MapRender({
   }
 
   return (
-    // <KeyboardAvoidingView
-    //   behavior={Platform.OS == "ios" ? "padding" : "height"}
-    //   keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 20}
-    //   enabled={Platform.OS === "ios" ? true : false}
-    // >
 
     <View style={styles.container}>
       <MapView
@@ -155,6 +168,8 @@ export default function MapRender({
         showsMyLocationButton={true}
         rotateEnabled={false}
         onLongPress={(e) => {
+          //on long press, you will open the bottom sheet to add
+          //a new marker. Except if you're too far zoomed out
           if (region.latitudeDelta > maxZoom) return;
           else {
             setIconEvent(e.nativeEvent);
@@ -164,6 +179,7 @@ export default function MapRender({
       >
         {populateRegion}
       </MapView>
+
       {bottomSheetVisible ? (
         <AddIconBottomSheet
           iconEvent={iconEvent}
@@ -181,8 +197,6 @@ export default function MapRender({
             markerDetailsModalVisible={markerDetailsModalVisible}
             setMarkerDetailsModalVisible={setMarkerDetailsModalVisible}
             currentCallout={currentCallout}
-            editModalScreen={editModalScreen}
-            setEditModalScreen={setEditModalScreen}
             toggleCalloutToEdit={toggleCalloutToEdit}
           />
         </View>
@@ -209,7 +223,7 @@ export default function MapRender({
 
       {iconEditModalScreen ? (
         <View style={styles.modalContainer}>
-          <IconModal
+          <IconEditModal
             toggleEditToIconSelection={toggleEditToIconSelection}
             setTemporaryHandiMarker={setTemporaryHandiMarker}
             iconEditModalScreen={iconEditModalScreen}

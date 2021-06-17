@@ -25,22 +25,22 @@ export async function getCoords(region) {
 
   console.log("fetching initiated", region);
 
-  const coordinates = dbh.collection("coordinates");
-  const bounds = getBounds(region);
-  const query = await coordinates
-    .where("latitude", ">=", bounds.minLat)
-    .where("latitude", "<=", bounds.maxLat)
-    .get();
-  const coordsArray = [];
-  query.docs.forEach((doc) => {
-    // console.log("doc data", doc.id);
-    coordsArray.push({
-      ...doc.data(),
-      id: doc.id,
-    });
-  });
-  console.log("coordsArray before leaving", coordsArray.length >0)
-  return coordsArray;
+  // const coordinates = dbh.collection("coordinates");
+  // const bounds = getBounds(region);
+  // const query = await coordinates
+  //   .where("latitude", ">=", bounds.minLat)
+  //   .where("latitude", "<=", bounds.maxLat)
+  //   .get();
+  // const coordsArray = [];
+  // query.docs.forEach((doc) => {
+  //   // console.log("doc data", doc.id);
+  //   coordsArray.push({
+  //     ...doc.data(),
+  //     id: doc.id,
+  //   });
+  // });
+  // console.log("coordsArray before leaving", coordsArray.length >0)
+  // return coordsArray;
 
   // I keep this below to test without wasting requests to Firestore (since there's a quota)
   return [

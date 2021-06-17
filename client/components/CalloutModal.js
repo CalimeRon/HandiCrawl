@@ -15,19 +15,13 @@ import { deleteCoord, deleteCoords } from "../services/apiServices";
 const iconDimension = 50;
 
 export default function CalloutModal({
-  modalVisible,
-  setModalVisible,
+  markerDetailsModalVisible,
+  setMarkerDetailsModalVisible,
   currentCallout,
-  editModalScreen,
-  setEditModalScreen,
   toggleCalloutToEdit,
   setCoords,
 }) {
-  // if (!currentCallout) return null;
-  // useEffect(() => {
 
-  // },[modalVisible])
-  // console.log("in modal", currentCallout);
   const [score, setScore] = useState(currentCallout.score);
   const [up, setUp] = useState(false);
   const [down, setDown] = useState(false);
@@ -58,8 +52,8 @@ export default function CalloutModal({
   return (
     <Modal
       transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => setModalVisible(false)}
+      visible={markerDetailsModalVisible}
+      onRequestClose={() => setMarkerDetailsModalVisible(false)}
       animationType="slide"
       // style={{  margin: 0, alignItems: 'center', justifyContent: 'center' }}
     >
@@ -117,7 +111,7 @@ export default function CalloutModal({
                   return coord.id !== currentCallout.id;
                 });
               });
-              setModalVisible(false);
+              setMarkerDetailsModalVisible(false);
             }}
           >
             <Image

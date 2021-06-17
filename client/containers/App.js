@@ -135,6 +135,7 @@ export default function App() {
       asyncFirstLoad === true
     ) {
       console.log("not sending request");
+      setStillInBounds(true);
       return;
     }
     //If the user zooms out too much, the icons should disappear (setCoords([])
@@ -200,6 +201,7 @@ export default function App() {
             setCoords={setCoords}
             maxZoom={maxZoom}
             setMapLoaded={setMapLoaded}
+            stillInBounds={stillInBounds}
           />
           <View style={styles.bottomMainView}>
             <Text></Text>

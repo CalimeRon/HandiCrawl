@@ -19,8 +19,8 @@ import { BlurView } from "expo-blur";
 const iconDimension = 50;
 
 export default function EditModal({
-  modalVisible,
-  setModalVisible,
+  markerDetailsModalVisible,
+  setMarkerDetailsModalVisible,
   currentCallout,
   editModalScreen,
   setEditModalScreen,
@@ -46,7 +46,7 @@ export default function EditModal({
 
   console.log("temp handi marker", temporaryHandiMarker);
 
-  console.log("in edit modal", modalVisible, "editmoda ", editModalScreen);
+  console.log("in edit modal", markerDetailsModalVisible, "editmoda ", editModalScreen);
   return (
     <Modal
       transparent={true}
@@ -155,7 +155,7 @@ export default function EditModal({
                   return newCoords;
                 });
                 setTemporaryHandiMarker(null);
-                setModalVisible(false);
+                setMarkerDetailsModalVisible(false);
                 setEditModalScreen(false);
               }}
             >

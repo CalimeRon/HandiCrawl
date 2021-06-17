@@ -1,167 +1,41 @@
+//failed attempt at modularity. By doing this the bottom sheets don't animate properly
+//so remove it unless you manage to keep the sliding of the
+//bottom sheets.
 import { BottomSheet } from "react-native-btr";
 import React, { useState, useEffect } from "react";
 import {
-  Button,
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
   Image,
-  Pressable,
   TextInput,
   useWindowDimensions,
 } from "react-native";
 import * as Location from "expo-location";
 import { renderIcon, renderTitle, allIcons } from "../services/iconFactory";
 import { postNewCoord } from "../services/apiServices";
-// import DescriptionModal from "./DescriptionModal";
-// import allIcons from '../services/iconFactory';
 
-export default function AddIconBottomSheet({
+export default function AddDetailsBottomSheet ({
+  detailsBottomSheetVisible,
+  selectedIconString,
+  placeName,
+  description,
   iconEvent,
-  visible,
-  setVisible,
-  setCoords,
+  setBottomSheetVisible,
   coords,
+  setCoords,
+  setDetailsBottomSheetVisible,
+
 }) {
-  // const [allIcons, setAllIcons] = useState([
-  //   "warning",
-  //   "easyAccess",
-  //   "elevator",
-  //   "ramp",
-  //   "stairs",
-  // ]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [placeName, onChangePlaceName] = useState("location name");
-  const [description, onChangeDescription] = useState("");
-  const [selectedIconString, setSelectedIconString] = useState("");
-  const currentWidth = useWindowDimensions().width;
-  const paddingPercent = 5;
-  const effectivePadding = Math.floor((paddingPercent * currentWidth) / 100);
-  // console.log("width", currentWidth, effectivePadding)
 
-  function hasNumber(string) {
-    return /\d/.test(string);
-  }
-  //map through all icons and render an icon inside the bottom sheet for each
-  //each icon is clickable, and on click, opens the second bottom sheet to add
-  //details before sending the post request to the db
-  const iconButton = allIcons.map((iconString) => {
-    return (
-      <View style={styles.iconImgContainer} key={iconString}>
-        <TouchableOpacity
-          key={iconString}
-          style={styles.handiMarkerContainer}
-          onPress={() => {
-            setSelectedIconString(iconString);
-            toggleModal();
-          }}
-        >
-          <View style={styles.markerImgWrapper}>
-            <Image
-              source={renderIcon(iconString)}
-              resizeMode="contain"
-              style={styles.iconImg}
-            />
-          </View>
-          <Text style={styles.generalText}>{renderTitle(iconString)}...</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  });
 
-  useEffect(() => {
-    console.log(placeName);
-  }, [placeName]);
-
-  // Modal is now another Bottom sheet. Need to fix the name
-  // When you activate toggle modal you enter the 2nd bottom sheet which
-  //is used to give a description about an icon
-  async function toggleModal() {
-    if (!modalVisible) {
-      //Get the street address thanks to reverseGeoCode
-      const location = await Location.reverseGeocodeAsync({
-        latitude: iconEvent.coordinate.latitude,
-        longitude: iconEvent.coordinate.longitude,
-      });
-      onChangePlaceName(
-        //if the location is a named place (like 'House of Parliament') render this
-        //otherwise render street + number
-        `${
-          hasNumber(location[0].name)
-            ? location[0].street + " " + location[0].name
-            : location[0].name
-        }`
-      );
-      setModalVisible(true);
-      setVisible(false);
-    } else {
-      setModalVisible(false);
-      setVisible(true);
-    }
-  }
-
-  // console.log("placeName", placeName);
 
   return (
-    <View>
-      <BottomSheet
-        visible={visible}
-        onBackButtonPress={() => setVisible(false)}
-        onBackdropPress={() => setVisible(false)}
-        style={{
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 4,
-          },
-          shadowOpacity: 0.32,
-          shadowRadius: 5.46,
-
-          elevation: 9,
-        }}
-      >
-        <View style={styles.bottomNavigationView}>
-          <Text style={[styles.generalText, styles.header]}>
-            Add a HandiMarker
-          </Text>
-          <View style={styles.closeIconContainer}>
-            <TouchableOpacity
-              // style={styles.handiMarkerContainer}
-              onPress={() => {
-                setVisible(false);
-              }}
-            >
-              <Image
-                source={require("../assets/closeIcon.png")}
-                resizeMode="contain"
-                style={styles.closeIconImg}
-              />
-            </TouchableOpacity>
-          </View>
-
-          <View
-            style={[
-              styles.buttonsContainer,
-              {
-                paddingLeft: effectivePadding,
-                paddingRight: effectivePadding,
-              },
-            ]}
-          >
-            {iconButton}
-          </View>
-        </View>
-      </BottomSheet>
-      {/* {modalVisible ? <DescriptionModal
-      modalVisible={modalVisible}
-      setModalVisible={setModalVisible}
-      toggleModal={toggleModal}
-    /> : null} */}
-      <BottomSheet
-        visible={modalVisible}
-        onBackButtonPress={() => toggleModal()}
-        onBackdropPress={() => toggleModal()}
+    <BottomSheet
+        visible={detailsBottomSheetVisible}
+        onBackButtonPress={() => setDetailsBottomSheetVisible(false)}
+        onBackdropPress={() =>  setDetailsBottomSheetVisible(false)}
       >
         <View style={styles.bottomAddIconView}>
           <View style={styles.addIconImgContainer}>
@@ -221,17 +95,17 @@ export default function AddIconBottomSheet({
               };
               setCoords([...coords, newCoordinate]);
               postNewCoord(newCoordinate);
-              setVisible(false);
-              setModalVisible(false);
+              setBottomSheetVisible(false);
+              setDetailsBottomSheetVisible(false);
             }}
           >
             <Text style={[styles.generalText, styles.textStyle]}>Send</Text>
           </TouchableOpacity>
         </View>
       </BottomSheet>
-    </View>
-  );
+  )
 }
+
 
 const styles = StyleSheet.create({
   addIconImg: {
@@ -313,8 +187,8 @@ const styles = StyleSheet.create({
   },
   closeIconContainer: {
     position: "absolute",
-    right: '5%',
-    top: '5%',
+    right: "5%",
+    top: "5%",
   },
   closeIconImg: {
     width: 20,
@@ -350,7 +224,7 @@ const styles = StyleSheet.create({
   generalText: {
     fontFamily: "K2D_600SemiBold",
     color: "#1C333E",
-    textAlign:'center',
+    textAlign: "center",
   },
   handiMarkerContainer: {
     flexDirection: "column",
@@ -363,8 +237,8 @@ const styles = StyleSheet.create({
     marginRight: 4,
     marginBottom: 4,
     width: 100,
-    position: 'relative',
-    zIndex: 0
+    position: "relative",
+    zIndex: 0,
   },
   header: {
     // fontWeight: "bold",
@@ -407,7 +281,7 @@ const styles = StyleSheet.create({
   markerImgWrapper: {
     // position: 'absolute',
     zIndex: 1,
-    elevation: 10
+    elevation: 10,
   },
   placeNameText: {
     backgroundColor: "#EAF0F2",
@@ -416,7 +290,7 @@ const styles = StyleSheet.create({
     width: "80%",
     // alignSelf: "flex-start",
     height: 35,
-    textAlign: 'left',
+    textAlign: "left",
   },
   propertyText: {
     paddingLeft: 15,
@@ -424,7 +298,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginBottom: 2,
     marginTop: 10,
-    textAlign: 'left'
+    textAlign: "left",
   },
   textStyle: {
     color: "white",
