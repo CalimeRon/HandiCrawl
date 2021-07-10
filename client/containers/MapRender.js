@@ -52,15 +52,16 @@ export default function MapRender({
     setDimension(region);
   }, [region]);
 
-  //creates the conditional width and height of icons by calling setDimension
-  let dimension = setDimension(region);
-
   //adapt the size of the icons on the map depending on the zoom level
   const setDimension = (region) => {
     if (!region) return;
     if (region.latitudeDelta > 0.004) return 30;
     else return 50;
   };
+
+  //creates the conditional width and height of icons by calling setDimension
+  let dimension = setDimension(region);
+
 
   console.log(
     coords.length !== 0,

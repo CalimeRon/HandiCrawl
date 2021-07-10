@@ -9,9 +9,9 @@ import {
   Dimensions,
   TextInput,
 } from "react-native";
-import MapRender from "./MapRender";
+import MapRender from "./containers/MapRender";
 import * as Location from "expo-location";
-import { getCoords, getBounds } from "../services/apiServices";
+import { getCoords, getBounds } from "./services/apiServices";
 
 import {
   useFonts,
@@ -22,7 +22,7 @@ import {
   K2D_800ExtraBold,
 } from "@expo-google-fonts/dev";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import InfoModal from "../components/InfoModal";
+import InfoModal from "./components/InfoModal";
 
 export default function App() {
   const [asyncFirstLoad, setAsyncFirstLoad] = useState(false);
@@ -193,7 +193,7 @@ export default function App() {
               <Image
                 style={styles.infoIcon}
                 resizeMode="contain"
-                source={require("../assets/infoIcon.png")}
+                source={require("./assets/infoIcon.png")}
               />
             </TouchableOpacity>
           </View>
