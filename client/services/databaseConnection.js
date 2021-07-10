@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
-import { API_KEY, APP_ID } from "@env";
+import { API_KEY, APP_ID, MEASUREMENT_ID } from "@env";
 
 const firebaseConfig = {
   apiKey: API_KEY,
@@ -11,7 +11,7 @@ const firebaseConfig = {
   storageBucket: "handicrawl.appspot.com",
   messagingSenderId: "600608599441",
   appId: APP_ID,
-  measurementId: "G-1DXE8MV8EG",
+  measurementId: MEASUREMENT_ID,
 };
 
 firebase.initializeApp(firebaseConfig);
