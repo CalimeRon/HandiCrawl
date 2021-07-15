@@ -18,8 +18,8 @@ The app was built in one week, using [Expo](https://expo.io/) on the front-end a
 ## Demo
 
 |  **App opening** | **Information screen**  | **Adding a marker** | **Modifying inaccurate marker** |
-| :-----: | :-----: | :----: | :--:  |
-| <img src="https://user-images.githubusercontent.com/65477545/125168165-b5768500-e1ac-11eb-9481-364d05fb05dd.gif" width="200"> |  <img src="https://user-images.githubusercontent.com/65477545/125168662-3b93cb00-e1af-11eb-90fb-67c27cf37f62.gif" width="200">       |     <img src="https://user-images.githubusercontent.com/65477545/125168800-e0aea380-e1af-11eb-8de6-b651d801a84a.gif" width="200">   | <img src="https://user-images.githubusercontent.com/65477545/125168913-7a765080-e1b0-11eb-9a45-414c45abf95a.gif" width="200"> |
+| :---------: | :---------: | :---------: | :---------:  |
+| <img src="https://user-images.githubusercontent.com/65477545/125168165-b5768500-e1ac-11eb-9481-364d05fb05dd.gif" height="400"> |  <img src="https://user-images.githubusercontent.com/65477545/125168662-3b93cb00-e1af-11eb-90fb-67c27cf37f62.gif" height="400">       |     <img src="https://user-images.githubusercontent.com/65477545/125168800-e0aea380-e1af-11eb-8de6-b651d801a84a.gif" height="400">   | <img src="https://user-images.githubusercontent.com/65477545/125168913-7a765080-e1b0-11eb-9a45-414c45abf95a.gif" height="400"> |
 
 
 ## Getting Started
