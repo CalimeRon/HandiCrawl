@@ -7,7 +7,6 @@ export const allIcons = [
   "stairs",
   'goodMetro',
   'badMetro',
-  'codeworks'
 ]
 
   // Access the icon png depending on the iconId parameter inside the location object
